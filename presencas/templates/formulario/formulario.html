@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Projeto Presenças - Formulário de cadastro de artistas e obras
+
+{% endblock %}
+
+{% block content %}
+
+<main>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <div>
+            {{ form.nome.label }}
+            {{ form.nome }}
+
+              {% if form.nome.errors %}
+                {% for error in form.nome.errors %}
+                  <div">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+          </div>
+
+        <div>
+            {{ form.trajetoria.label }}
+            {{ form.trajetoria }}
+
+              {% if form.trajetoria.errors %}
+                {% for error in form.trajetoria.errors %}
+                  <div">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+          </div>
+          <div>
+            {{ form.producao.label }}
+            {{ form.producao }}
+              {% if form.producao.errors %}
+                {% for error in form.producao.errors %}
+                  <div">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+          </div>
+          <div>
+            <h4>Links</h4>
+
+            {{ form.links }}
+
+            <button id="adicionar-link" value="Adicionar link" type="button">Adicionar link</button>
+            
+              {% if form.links.errors %}
+                {% for error in form.links.errors %}
+                  <div">
+                    {{ error }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+          </div>
+
+        <input type="submit" value="Criar artista">
+    </form>
+</main>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script>
+
+    function adiciona_bloco_link(e)
+    {
+        if ($("#links > tbody").children().length == 0)
+        {
+            let templateURL = $($.parseHTML('{{ form.links.__html__() }}')).find(':nth-child(1)').get(1).outerHTML;
+            $("#links > tbody").append(templateURL)
+            $("#remover-link").prop('disabled', false)
+
+            $('#links tbody tr [name*="-remover_link"]:last').on("click", e => {
+                const nome = e.target.name
+                console.log(nome)
+                $(`#links > tbody > tr `).filter((a,b) => {
+                    console.log(b)
+                    if ($(b).find(`[name*="${nome}"]`).length > 0)
+                        return b
+                }).remove() 
+            })
+
+            return
+        }
+        
+        let ultimoIdLink = String($('#links > tbody > tr:last > th > label:first').attr('for'))
+        let [labelForAnterior, novoId] = [ultimoIdLink.split('-')[0], Number(ultimoIdLink.split('-')[1]) + 1]
+
+        let novoLink = $('#links > tbody > tr:last').clone()
+
+        $(novoLink).html($(novoLink).html().replaceAll(ultimoIdLink, ultimoIdLink.split('-')[0] + '-' + novoId))
+
+        $('#links').append($(novoLink).prop('outerHTML'))
+
+        $('#links tbody tr [name*="-remover_link"]:last').on("click", e => {
+                const nome = e.target.name
+                
+                $(`#links > tbody > tr `).filter((a,b) => {
+                    if ($(b).find(`[name*="${nome}"]`).length > 0)
+                        return b
+                }).remove()
+
+                if ($("#links > tbody").children().length == 7)
+                    $("#adicionar-link").prop('disabled', false)
+        })
+
+        if ($("#links > tbody").children().length == 8)
+            $("#adicionar-link").prop('disabled', true)
+
+        
+    }
+
+    $('#adicionar-link').on('click', adiciona_bloco_link);
+
+    $('#links [name*="-remover_link"]').on("click", e => {
+        const nome = e.currentTarget.name
+        $(`#links > tbody > tr `).filter((a,b) => {
+            if ($(b).find(`[name*="${nome}"]`).length > 0)
+                return b
+        }).remove() 
+    })
+</script>
+
+{% endblock %}
