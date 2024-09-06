@@ -32,7 +32,7 @@ class ImagensArtista(FlaskForm):
     data = StringField("Titulo", [Length(max = 128)])
     descricao = TextAreaField('Descrição')
     fonte = URLField('URL')
-    arquivo = FileField('Arquivo')
+    arquivo = FileField('Arquivo', render_kw=dict(required=True, oninvalid='setCustomValidity("Insira um arquivo")'))
     remover_campo_imagem = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
 
 
@@ -42,7 +42,7 @@ class UrlsArtista(FlaskForm):
 
     url = URLField('URL', [InputRequired("É necessário inserir o link")])
 
-    remover_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover link"))
+    remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover link"))
 
 class FormularioArtista(FlaskForm):
 
@@ -61,5 +61,5 @@ class FormularioArtista(FlaskForm):
 
     ultima_atualizacao = DateField('Data da última atualização', format = ['%d/%m/%Y', '%Y-%m-%d'], \
                                 render_kw=dict(max=date.today(), \
-                                            oninvalid=f'setCustomValidity("Selecione um valor que não seja depois de {date.strftime(date.today(), "%d/%m/%Y")}")'), \
+                                oninvalid=f'setCustomValidity("Selecione um valor que não seja depois de {date.strftime(date.today(), "%d/%m/%Y")}")'), \
                                 validators=[DataValida()])

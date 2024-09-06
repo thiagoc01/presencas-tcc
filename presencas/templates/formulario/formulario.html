@@ -39,7 +39,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
                 {% endfor %}
             {% endif %}
 
-            <button id="adicionar-campo-imagem" type="button">Adicionar campo</button>
+            <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
         
         </div>
 
@@ -79,7 +79,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
                 {% endfor %}
               {% endif %}
 
-            <button id="adicionar-link" type="button">Adicionar link</button>
+            <button id="adicionar_campo_link" type="button">Adicionar link</button>
             
           </div>
 
@@ -98,91 +98,64 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     const MAX_LINKS = 8;
     const MAX_IMAGENS = 12;
 
-    function remove_ultimo_link(e)
+    function remove_ultimo_campo(evento)
     {
-        const nome = e.target.name;
+        const [nome, variavel, nome_botao_adicionar] =
+                [evento.target.name, evento.data.variavel, evento.data.nome_botao_adicionar];
                 
-        $(`#links > tbody > tr `).filter((a,b) => {
-            if ($(b).find(`[name*="${nome}"]`).length > 0)
-                return b;
+        $(`#${variavel} > tbody > tr `).filter( (_, elemento) => {
+            if ($(elemento).find(`[name*="${nome}"]`).length > 0)
+                return elemento;
         }).remove()
 
-        if ($("#links > tbody").children().length == MAX_LINKS - 1)
-            $("#adicionar-link").prop('disabled', false);
+        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ? MAX_LINKS - 1 : MAX_IMAGENS - 1))
+            $(`#${nome_botao_adicionar}`).prop('disabled', false);
     }
 
-    function remove_ultimo_campo_imagem(e)
+    function adiciona_bloco(evento)
     {
-        const nome = e.target.name;
-                
-        $(`#imagens > tbody > tr `).filter((a,b) => {
-            if ($(b).find(`[name*="${nome}"]`).length > 0)
-                return b;
-        }).remove()
+        const [variavel, nome_botao_remover, nome_botao_adicionar, callback] =
+            [evento.data.variavel, evento.data.nome_botao_remover, evento.data.nome_botao_adicionar, evento.data.callback];
 
-        if ($("#imagens > tbody").children().length == MAX_IMAGENS - 1)
-            $("#adicionar-campo-imagem").prop('disabled', false);
-    }
-
-    function adiciona_bloco_link(e)
-    {
-        if ($("#links > tbody").children().length == 0)
+        if ($(`#${variavel} > tbody`).children().length == 0)
         {
-            let templateURL = $($.parseHTML('{{ form.links.__html__() }}')).find(':nth-child(1)').get(1).outerHTML;
-            $("#links > tbody").append(templateURL);
+            let templateURL;
 
-            $('#links tbody tr [name*="-remover_link"]:last').on("click", remove_ultimo_link)
+            if (variavel == 'links')
+                templateURL = $($.parseHTML('{{ form.links.__html__() }}')).find(':nth-child(1)').get(1).outerHTML;
+            else
+                templateURL = $($.parseHTML(`{{ form.imagens.__html__() }}`)).find(':nth-child(1)').get(1).outerHTML;
+
+            $(`#${variavel} > tbody`).append(templateURL);
+
+            $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
 
             return;
         }
-        
-        let ultimoIdLink = String($('#links > tbody > tr:last > th > label:first').attr('for'));
-        let [labelForAnterior, novoId] = [ultimoIdLink.split('-')[0], Number(ultimoIdLink.split('-')[1]) + 1];
 
-        let novoLink = $('#links > tbody > tr:last').clone();
+        let ultimoIdCampo = String($(`#${variavel} > tbody > tr:last > th > label:first`).attr('for'));
+        let [labelForAnterior, novoId] = [ultimoIdCampo.split('-')[0], Number(ultimoIdCampo.split('-')[1]) + 1];
 
-        $(novoLink).html($(novoLink).html().replaceAll(ultimoIdLink, ultimoIdLink.split('-')[0] + '-' + novoId));
+        let novoCampo = $(`#${variavel} > tbody > tr:last`).clone();
 
-        $('#links').append($(novoLink).prop('outerHTML'));
+        $(novoCampo).html($(novoCampo).html().replaceAll(ultimoIdCampo, ultimoIdCampo.split('-')[0] + '-' + novoId));
 
-        $('#links tbody tr [name*="-remover_link"]:last').on("click", remove_ultimo_link)
+        $(`#${variavel}`).append($(novoCampo).prop('outerHTML'));
 
-        if ($("#links > tbody").children().length == MAX_LINKS)
-            $("#adicionar-link").prop('disabled', true);    
+        $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
+
+        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ?  MAX_LINKS : MAX_IMAGENS))
+            $(`#${nome_botao_adicionar}`).prop('disabled', true);
     }
 
-    function adiciona_campo_imagem(e)
-    {
-        if ($("#imagens > tbody").children().length == 0)
-        {
-            let templateURL = $($.parseHTML(`{{ form.imagens.__html__() }}`)).find(':nth-child(1)').get(1).outerHTML;
-            $("#imagens > tbody").append(templateURL);
+    $('#adicionar_campo_link').on('click', {variavel : 'links', nome_botao_remover : 'remover_campo_link',
+                        nome_botao_adicionar : 'adicionar_campo_link', callback: remove_ultimo_campo}, adiciona_bloco);
 
-            $('#imagens tbody tr [name*="-remover_campo_imagem"]:last').on("click", remove_ultimo_campo_imagem)
+    $('#adicionar_campo_imagem').on('click', {variavel : 'imagens', nome_botao_remover : 'remover_campo_imagem',
+        nome_botao_adicionar : 'adicionar_campo_imagem', callback: remove_ultimo_campo}, adiciona_bloco);
 
-            return;
-        }
-        
-        let ultimoIdCampoImagem = String($('#imagens > tbody > tr:last > th > label:first').attr('for'));
-        let [labelForAnterior, novoId] = [ultimoIdCampoImagem.split('-')[0], Number(ultimoIdCampoImagem.split('-')[1]) + 1];
-
-        let novoCampo = $('#imagens > tbody > tr:last').clone();
-
-        $(novoCampo).html($(novoCampo).html().replaceAll(ultimoIdCampoImagem, ultimoIdCampoImagem.split('-')[0] + '-' + novoId));
-
-        $('#imagens').append($(novoCampo).prop('outerHTML'));
-
-        $('#imagens tbody tr [name*="-remover_campo_imagem"]:last').on("click", remove_ultimo_campo_imagem)
-
-        if ($("#imagens > tbody").children().length == MAX_IMAGENS)
-            $("#adicionar-campo-imagem").prop('disabled', true);    
-    }
-
-    $('#adicionar-link').on('click', adiciona_bloco_link);
-    $('#adicionar-campo-imagem').on('click', adiciona_campo_imagem);
-
-    $('#links [name*="-remover_link"]').on("click", remove_ultimo_link)
-    $('#imagens [name*="-remover_campo_imagem"]').on("click", remove_ultimo_campo_imagem)
+    $('#links [name*="-remover_campo_link"]').on("click", {variavel: 'links', nome_botao_adicionar : 'adicionar_campo_link'}, remove_ultimo_campo)
+    $('#imagens [name*="-remover_campo_imagem"]').on("click", {variavel: 'imagens', nome_botao_adicionar : 'adicionar_campo_imagem'}, remove_ultimo_campo)
 
     $(':root').on("change", 'input[type="file"]', function (e) {
         const arquivos = e.target.files;
