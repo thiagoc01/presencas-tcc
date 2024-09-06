@@ -92,7 +92,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     </form>
 </main>
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
 <script>
 
     const MAX_LINKS = 8;
@@ -184,12 +184,12 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     $('#links [name*="-remover_link"]').on("click", remove_ultimo_link)
     $('#imagens [name*="-remover_campo_imagem"]').on("click", remove_ultimo_campo_imagem)
 
-    $('input[type="file"]').change(function (e) {
+    $(':root').on("change", 'input[type="file"]', function (e) {
         const arquivos = e.target.files;
 
         for (let i = 0 ; i < arquivos.length ; i++)
         {
-            if (arquivos[i].name.search(/.png|.jpeg|.jpg/g) == -1)
+            if (arquivos[i].name.search(/(.png|.jpeg|.jpg)$/g) == -1)
                 $(`input[name="${e.target.name}"]`).val('')
         }
     });
