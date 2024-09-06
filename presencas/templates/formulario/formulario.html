@@ -19,12 +19,29 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
               {% if form.nome.errors %}
                 {% for error in form.nome.errors %}
-                  <div">
+                  <div>
                     {{ error }}
                   </div>
                 {% endfor %}
               {% endif %}
-          </div>
+        </div>
+
+        <div>
+            <h4>Lista de imagens</h4>
+
+            {{ form.imagens }}
+
+            {% if form.imagens.errors %}
+                {% for error in form.imagens.errors %}
+                  <div>
+                    {{ error }}
+                  </div>
+                {% endfor %}
+            {% endif %}
+
+            <button id="adicionar-campo-imagem" type="button">Adicionar campo</button>
+        
+        </div>
 
         <div>
             {{ form.trajetoria.label }}
@@ -32,7 +49,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
               {% if form.trajetoria.errors %}
                 {% for error in form.trajetoria.errors %}
-                  <div">
+                  <div>
                     {{ error }}
                   </div>
                 {% endfor %}
@@ -43,7 +60,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
             {{ form.producao }}
               {% if form.producao.errors %}
                 {% for error in form.producao.errors %}
-                  <div">
+                  <div>
                     {{ error }}
                   </div>
                 {% endfor %}
@@ -54,15 +71,21 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
             {{ form.links }}
 
-            <button id="adicionar-link" value="Adicionar link" type="button">Adicionar link</button>
-            
-              {% if form.links.errors %}
+            {% if form.links.errors %}
                 {% for error in form.links.errors %}
-                  <div">
+                  <div>
                     {{ error }}
                   </div>
                 {% endfor %}
               {% endif %}
+
+            <button id="adicionar-link" type="button">Adicionar link</button>
+            
+          </div>
+
+          <div>
+            <h4>Última atualização</h4>
+            {{ form.ultima_atualizacao }}
           </div>
 
         <input type="submit" value="Criar artista">
@@ -72,63 +95,105 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script>
 
+    const MAX_LINKS = 8;
+    const MAX_IMAGENS = 12;
+
+    function remove_ultimo_link(e)
+    {
+        const nome = e.target.name;
+                
+        $(`#links > tbody > tr `).filter((a,b) => {
+            if ($(b).find(`[name*="${nome}"]`).length > 0)
+                return b;
+        }).remove()
+
+        if ($("#links > tbody").children().length == MAX_LINKS - 1)
+            $("#adicionar-link").prop('disabled', false);
+    }
+
+    function remove_ultimo_campo_imagem(e)
+    {
+        const nome = e.target.name;
+                
+        $(`#imagens > tbody > tr `).filter((a,b) => {
+            if ($(b).find(`[name*="${nome}"]`).length > 0)
+                return b;
+        }).remove()
+
+        if ($("#imagens > tbody").children().length == MAX_IMAGENS - 1)
+            $("#adicionar-campo-imagem").prop('disabled', false);
+    }
+
     function adiciona_bloco_link(e)
     {
         if ($("#links > tbody").children().length == 0)
         {
             let templateURL = $($.parseHTML('{{ form.links.__html__() }}')).find(':nth-child(1)').get(1).outerHTML;
-            $("#links > tbody").append(templateURL)
-            $("#remover-link").prop('disabled', false)
+            $("#links > tbody").append(templateURL);
 
-            $('#links tbody tr [name*="-remover_link"]:last').on("click", e => {
-                const nome = e.target.name
-                console.log(nome)
-                $(`#links > tbody > tr `).filter((a,b) => {
-                    console.log(b)
-                    if ($(b).find(`[name*="${nome}"]`).length > 0)
-                        return b
-                }).remove() 
-            })
+            $('#links tbody tr [name*="-remover_link"]:last').on("click", remove_ultimo_link)
 
-            return
+            return;
         }
         
-        let ultimoIdLink = String($('#links > tbody > tr:last > th > label:first').attr('for'))
-        let [labelForAnterior, novoId] = [ultimoIdLink.split('-')[0], Number(ultimoIdLink.split('-')[1]) + 1]
+        let ultimoIdLink = String($('#links > tbody > tr:last > th > label:first').attr('for'));
+        let [labelForAnterior, novoId] = [ultimoIdLink.split('-')[0], Number(ultimoIdLink.split('-')[1]) + 1];
 
-        let novoLink = $('#links > tbody > tr:last').clone()
+        let novoLink = $('#links > tbody > tr:last').clone();
 
-        $(novoLink).html($(novoLink).html().replaceAll(ultimoIdLink, ultimoIdLink.split('-')[0] + '-' + novoId))
+        $(novoLink).html($(novoLink).html().replaceAll(ultimoIdLink, ultimoIdLink.split('-')[0] + '-' + novoId));
 
-        $('#links').append($(novoLink).prop('outerHTML'))
+        $('#links').append($(novoLink).prop('outerHTML'));
 
-        $('#links tbody tr [name*="-remover_link"]:last').on("click", e => {
-                const nome = e.target.name
-                
-                $(`#links > tbody > tr `).filter((a,b) => {
-                    if ($(b).find(`[name*="${nome}"]`).length > 0)
-                        return b
-                }).remove()
+        $('#links tbody tr [name*="-remover_link"]:last').on("click", remove_ultimo_link)
 
-                if ($("#links > tbody").children().length == 7)
-                    $("#adicionar-link").prop('disabled', false)
-        })
+        if ($("#links > tbody").children().length == MAX_LINKS)
+            $("#adicionar-link").prop('disabled', true);    
+    }
 
-        if ($("#links > tbody").children().length == 8)
-            $("#adicionar-link").prop('disabled', true)
+    function adiciona_campo_imagem(e)
+    {
+        if ($("#imagens > tbody").children().length == 0)
+        {
+            let templateURL = $($.parseHTML(`{{ form.imagens.__html__() }}`)).find(':nth-child(1)').get(1).outerHTML;
+            $("#imagens > tbody").append(templateURL);
 
+            $('#imagens tbody tr [name*="-remover_campo_imagem"]:last').on("click", remove_ultimo_campo_imagem)
+
+            return;
+        }
         
+        let ultimoIdCampoImagem = String($('#imagens > tbody > tr:last > th > label:first').attr('for'));
+        let [labelForAnterior, novoId] = [ultimoIdCampoImagem.split('-')[0], Number(ultimoIdCampoImagem.split('-')[1]) + 1];
+
+        let novoCampo = $('#imagens > tbody > tr:last').clone();
+
+        $(novoCampo).html($(novoCampo).html().replaceAll(ultimoIdCampoImagem, ultimoIdCampoImagem.split('-')[0] + '-' + novoId));
+
+        $('#imagens').append($(novoCampo).prop('outerHTML'));
+
+        $('#imagens tbody tr [name*="-remover_campo_imagem"]:last').on("click", remove_ultimo_campo_imagem)
+
+        if ($("#imagens > tbody").children().length == MAX_IMAGENS)
+            $("#adicionar-campo-imagem").prop('disabled', true);    
     }
 
     $('#adicionar-link').on('click', adiciona_bloco_link);
+    $('#adicionar-campo-imagem').on('click', adiciona_campo_imagem);
 
-    $('#links [name*="-remover_link"]').on("click", e => {
-        const nome = e.currentTarget.name
-        $(`#links > tbody > tr `).filter((a,b) => {
-            if ($(b).find(`[name*="${nome}"]`).length > 0)
-                return b
-        }).remove() 
-    })
+    $('#links [name*="-remover_link"]').on("click", remove_ultimo_link)
+    $('#imagens [name*="-remover_campo_imagem"]').on("click", remove_ultimo_campo_imagem)
+
+    $('input[type="file"]').change(function (e) {
+        const arquivos = e.target.files;
+
+        for (let i = 0 ; i < arquivos.length ; i++)
+        {
+            if (arquivos[i].name.search(/.png|.jpeg|.jpg/g) == -1)
+                $(`input[name="${e.target.name}"]`).val('')
+        }
+    });
+
 </script>
 
 {% endblock %}
