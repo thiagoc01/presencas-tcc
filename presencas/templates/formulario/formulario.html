@@ -14,79 +14,43 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         {{ form.csrf_token }}
 
         <div>
-            {{ form.nome.label }}
-            {{ form.nome }}
-
-              {% if form.nome.errors %}
-                {% for error in form.nome.errors %}
-                  <div>
-                    {{ error }}
-                  </div>
-                {% endfor %}
-              {% endif %}
+            {{ renderiza_campo(form.nome) }}
         </div>
 
         <div>
+            {{ renderiza_campo(form.trajetoria) }}
+        </div>
+
+        <div>
+            {{ renderiza_campo(form.producao) }}
+        </div>
+
+        <div>
+
             <h4>Lista de imagens</h4>
 
-            {{ form.imagens }}
+            <fieldset name="imagens">
+                {{ renderiza_tabelas_campos(form.imagens) }}
+                <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
+            </fieldset>
 
-            {% if form.imagens.errors %}
-                {% for error in form.imagens.errors %}
-                  <div>
-                    {{ error }}
-                  </div>
-                {% endfor %}
-            {% endif %}
-
-            <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
-        
         </div>
 
         <div>
-            {{ form.trajetoria.label }}
-            {{ form.trajetoria }}
 
-              {% if form.trajetoria.errors %}
-                {% for error in form.trajetoria.errors %}
-                  <div>
-                    {{ error }}
-                  </div>
-                {% endfor %}
-              {% endif %}
-          </div>
-          <div>
-            {{ form.producao.label }}
-            {{ form.producao }}
-              {% if form.producao.errors %}
-                {% for error in form.producao.errors %}
-                  <div>
-                    {{ error }}
-                  </div>
-                {% endfor %}
-              {% endif %}
-          </div>
-          <div>
             <h4>Links</h4>
 
-            {{ form.links }}
+            <fieldset name="links">
+                {{ renderiza_tabelas_campos(form.links) }}
+                <button id="adicionar_campo_link" type="button">Adicionar link</button>
+            </fieldset>
 
-            {% if form.links.errors %}
-                {% for error in form.links.errors %}
-                  <div>
-                    {{ error }}
-                  </div>
-                {% endfor %}
-              {% endif %}
+        </div>
 
-            <button id="adicionar_campo_link" type="button">Adicionar link</button>
-            
-          </div>
-
-          <div>
+        <div>
             <h4>Última atualização</h4>
             {{ form.ultima_atualizacao }}
-          </div>
+        </div>
 
         <input type="submit" value="Criar artista">
     </form>
@@ -106,7 +70,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         $(`#${variavel} > tbody > tr `).filter( (_, elemento) => {
             if ($(elemento).find(`[name*="${nome}"]`).length > 0)
                 return elemento;
-        }).remove()
+        }).remove();
 
         if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ? MAX_LINKS - 1 : MAX_IMAGENS - 1))
             $(`#${nome_botao_adicionar}`).prop('disabled', false);
@@ -119,28 +83,33 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
         if ($(`#${variavel} > tbody`).children().length == 0)
         {
-            let templateURL;
+            let template_URL;
 
             if (variavel == 'links')
-                templateURL = $($.parseHTML('{{ form.links.__html__() }}')).find(':nth-child(1)').get(1).outerHTML;
+                template_URL = $($.parseHTML(`{{ renderiza_tabelas_campos(form.links) }}`)).find(':nth-child(1)');
             else
-                templateURL = $($.parseHTML(`{{ form.imagens.__html__() }}`)).find(':nth-child(1)').get(1).outerHTML;
+                template_URL = $($.parseHTML(`{{ renderiza_tabelas_campos(form.imagens) }}`)).find(':nth-child(1)');
 
-            $(`#${variavel} > tbody`).append(templateURL);
+            $(template_URL).children('[id *= -erro-]').remove();
+            template_URL = $(template_URL).find(":nth-child(1)").get(0).outerHTML;
+
+            $(`#${variavel} > tbody`).append(template_URL);
 
             $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
 
             return;
         }
 
-        let ultimoIdCampo = String($(`#${variavel} > tbody > tr:last > th > label:first`).attr('for'));
-        let [labelForAnterior, novoId] = [ultimoIdCampo.split('-')[0], Number(ultimoIdCampo.split('-')[1]) + 1];
+        let ultimo_id_campo = String($(`#${variavel} > tbody > tr:last > th > label:first`).attr('for'));
+        let [label_for_anterior, novo_id] = [ultimo_id_campo.split('-')[0], Number(ultimo_id_campo.split('-')[1]) + 1];
 
-        let novoCampo = $(`#${variavel} > tbody > tr:last`).clone();
+        let novo_campo = $(`#${variavel} > tbody > tr:last`).clone();
 
-        $(novoCampo).html($(novoCampo).html().replaceAll(ultimoIdCampo, ultimoIdCampo.split('-')[0] + '-' + novoId));
+        $(novo_campo).find("[id *= -erro-]").remove();
 
-        $(`#${variavel}`).append($(novoCampo).prop('outerHTML'));
+        $(novo_campo).html($(novo_campo).html().replaceAll(ultimo_id_campo, label_for_anterior + '-' + novo_id));
+
+        $(`#${variavel}`).append($(novo_campo).prop('outerHTML'));
 
         $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
 
@@ -154,8 +123,8 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     $('#adicionar_campo_imagem').on('click', {variavel : 'imagens', nome_botao_remover : 'remover_campo_imagem',
         nome_botao_adicionar : 'adicionar_campo_imagem', callback: remove_ultimo_campo}, adiciona_bloco);
 
-    $('#links [name*="-remover_campo_link"]').on("click", {variavel: 'links', nome_botao_adicionar : 'adicionar_campo_link'}, remove_ultimo_campo)
-    $('#imagens [name*="-remover_campo_imagem"]').on("click", {variavel: 'imagens', nome_botao_adicionar : 'adicionar_campo_imagem'}, remove_ultimo_campo)
+    $('#links [name*="-remover_campo_link"]').on("click", {variavel: 'links', nome_botao_adicionar : 'adicionar_campo_link'}, remove_ultimo_campo);
+    $('#imagens [name*="-remover_campo_imagem"]').on("click", {variavel: 'imagens', nome_botao_adicionar : 'adicionar_campo_imagem'}, remove_ultimo_campo);
 
     $(':root').on("change", 'input[type="file"]', function (e) {
         const arquivos = e.target.files;
@@ -163,10 +132,52 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         for (let i = 0 ; i < arquivos.length ; i++)
         {
             if (arquivos[i].name.search(/(.png|.jpeg|.jpg)$/g) == -1)
-                $(`input[name="${e.target.name}"]`).val('')
+                $(`input[name="${e.target.name}"]`).val('');
         }
+    });
+
+    ['links', 'imagens'].forEach(campo => {
+        $(`#${campo} td input`).on("input", function (evento) {
+            $(evento.target).parent($(`#${evento.target.id}`)).next('[id *= -erro-]').remove();
+            $(evento.target).off("input");
+        });
     });
 
 </script>
 
 {% endblock %}
+
+{% macro renderiza_tabelas_campos(campo_form) -%}
+    <table id="{{ campo_form.name }}">
+        {% for i in range(0, campo_form|length) %}
+            <tr>
+                <th><label for="{{ campo_form.name }}-{{i}}"></label></th>
+                <td>
+                    <fieldset name="{{ campo_form[i].name }}">
+                        {% for campo in campo_form[i] %}
+                            {{ renderiza_campo(campo) }}
+                            {% set indice_nome_var = campo.name.split('-')|length %}
+                            {% set nome_var = campo.name.split('-')[indice_nome_var - 1] %}
+                            {{ renderiza_erro_lista_campos(campo_form.name, i, nome_var ) }}
+                        {% endfor %}       
+                    </fieldset>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+{%- endmacro %}
+
+{% macro renderiza_campo(campo) -%}
+    <div>
+        {{ campo.label }}
+        {{ campo }}
+    </div>
+{%- endmacro %}
+
+{% macro renderiza_erro_lista_campos(campo, indice, erro_var) -%}
+    {% if form.erros.get(campo)[indice].get(erro_var) %}
+        <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}">
+            {{ form.erros.get(campo)[indice].get(erro_var) }}
+        </div>
+    {% endif %}
+{%- endmacro %}
