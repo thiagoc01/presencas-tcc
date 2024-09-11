@@ -15,14 +15,17 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
         <div>
             {{ renderiza_campo(form.nome) }}
+            {{ renderiza_erro_campo(form.nome.name) }}
         </div>
 
         <div>
             {{ renderiza_campo(form.trajetoria) }}
+            {{ renderiza_erro_campo(form.trajetoria.name) }}
         </div>
 
         <div>
             {{ renderiza_campo(form.producao) }}
+            {{ renderiza_erro_campo(form.producao.name) }}
         </div>
 
         <div>
@@ -50,11 +53,16 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         <div>
             <h4>Última atualização</h4>
             {{ form.ultima_atualizacao }}
+            {{ renderiza_erro_campo(form.ultima_atualizacao.name) }}
         </div>
 
         <input type="submit" value="Criar artista">
     </form>
 </main>
+
+{% endblock %}
+
+{% block js %}
 
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
 <script>
@@ -131,9 +139,16 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
         for (let i = 0 ; i < arquivos.length ; i++)
         {
-            if (arquivos[i].name.search(/(.png|.jpeg|.jpg)$/g) == -1)
+            if (arquivos[i].name.search(/(.png|.jpeg|.jpg|.jfif)$/g) == -1)
                 $(`input[name="${e.target.name}"]`).val('');
         }
+    });
+
+    ['nome', 'trajetoria', 'producao', 'ultima_atualizacao'].forEach(campo => {
+        $(`#${campo}`).on("input", function (evento) {
+            $('#' + campo + '-erro').remove();
+            $(evento.target).off("input");
+        });
     });
 
     ['links', 'imagens'].forEach(campo => {
@@ -174,10 +189,20 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     </div>
 {%- endmacro %}
 
-{% macro renderiza_erro_lista_campos(campo, indice, erro_var) -%}
-    {% if form.erros.get(campo)[indice].get(erro_var) %}
-        <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}">
-            {{ form.erros.get(campo)[indice].get(erro_var) }}
+{% macro renderiza_erro_campo(campo) -%}
+    {% if form.erros.get(campo) %}
+        <div id="{{ campo }}-erro">
+            {{ form.erros.get(campo) }}
         </div>
+    {% endif %}
+{%- endmacro %}
+
+{% macro renderiza_erro_lista_campos(campo, indice, erro_var) -%}
+    {% if form.erros.get(campo) != None %}
+        {% if form.erros.get(campo)[indice].get(erro_var) %}
+            <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}">
+                {{ form.erros.get(campo)[indice].get(erro_var) }}
+            </div>
+        {% endif %}
     {% endif %}
 {%- endmacro %}
