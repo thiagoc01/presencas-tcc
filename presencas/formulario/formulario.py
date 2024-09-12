@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, StringField, URLField, FieldList, FormField, Field, DateField, FileField
-from wtforms.validators import InputRequired, Length, ValidationError, URL
+from wtforms.fields import TextAreaField, StringField, URLField, FieldList, FormField, Field, DateField, FileField, EmailField
+from wtforms.validators import InputRequired, Length, ValidationError, URL, Email
 from wtforms.widgets import TableWidget, html_params
 from datetime import date
 
@@ -57,6 +57,12 @@ class UrlsArtista(FlaskForm):
 
     remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover link"))
 
+class PalavrasChave(FlaskForm):
+
+    palavra_chave = StringField('', [InputRequired('É necessário inserir a palavra-chave')], render_kw=dict(placeholder='Palavra-chave'))
+
+    remover_campo_palavras_chave = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
+
 class FormularioArtista(FlaskForm):
 
     class Meta:
@@ -71,6 +77,20 @@ class FormularioArtista(FlaskForm):
     imagens = FieldList(FormField(ImagensArtista, label=''), label = "", widget=TableWidget(), min_entries=1, max_entries=12)
 
     links = FieldList(FormField(UrlsArtista, label=''), label = "", widget=TableWidget(), min_entries=1, max_entries=8)
+
+    pesquisante = StringField('Pesquisante', render_kw=dict(placeholder="Pesquisante"))
+
+    email_pesquisante = StringField('E-mail pesquisante', [Email("Digite um e-mail válido")], render_kw=dict(placeholder="E-mail"))
+
+    data_nascimento = StringField("Data de nascimento", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+
+    palavras_chave = FieldList(FormField(PalavrasChave, label = ''), label = "", widget=TableWidget(), min_entries=1, max_entries=12)
+
+    genero = StringField("Gênero", render_kw=dict(placeholder="Gênero"))
+
+    pagina = URLField('URL', [URL(require_tld=False, message="Insira uma URL válida")], render_kw=dict(placeholder="http://", \
+                                                                                        oninvalid="setCustomValidity('Insira uma URL válida')", \
+                                                                                        oninput="setCustomValidity('')"))
 
     ultima_atualizacao = DateField('Data da última atualização', format = ['%d/%m/%Y', '%Y-%m-%d'], \
                                 render_kw=dict(max=date.today(), \

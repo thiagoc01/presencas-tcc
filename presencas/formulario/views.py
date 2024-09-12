@@ -27,4 +27,7 @@ def index():
             for i in form.links.data:
                 print(i)
 
+            for i in form.palavras_chave.data:
+                print(i)
+
     return render_template('formulario/formulario.html', form = form)

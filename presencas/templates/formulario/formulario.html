@@ -29,6 +29,31 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         </div>
 
         <div>
+            {{ renderiza_campo(form.pesquisante) }}
+            {{ renderiza_erro_campo(form.pesquisante.name) }}
+        </div>
+
+        <div>
+            {{ renderiza_campo(form.email_pesquisante) }}
+            {{ renderiza_erro_campo(form.email_pesquisante.name) }}
+        </div>
+
+        <div>
+            {{ renderiza_campo(form.data_nascimento) }}
+            {{ renderiza_erro_campo(form.data_nascimento.name) }}
+        </div>
+
+        <div>
+            {{ renderiza_campo(form.genero) }}
+            {{ renderiza_erro_campo(form.genero.name) }}
+        </div>
+
+        <div>
+            {{ renderiza_campo(form.pagina) }}
+            {{ renderiza_erro_campo(form.pagina.name) }}
+        </div>
+
+        <div>
 
             <h4>Lista de imagens</h4>
 
@@ -51,6 +76,15 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         </div>
 
         <div>
+            <h4>Palavras-chave</h4>
+
+            <fieldset name="palavras_chave">
+                {{ renderiza_tabelas_campos(form.palavras_chave) }}
+                <button id="adicionar_campo_palavras_chave" type="button">Adicionar campo</button>
+            </fieldset>
+        </div>
+
+        <div>
             <h4>Última atualização</h4>
             {{ form.ultima_atualizacao }}
             {{ renderiza_erro_campo(form.ultima_atualizacao.name) }}
@@ -68,7 +102,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 <script>
 
     const MAX_LINKS = 8;
-    const MAX_IMAGENS = 12;
+    const MAX_IMAGENS = MAX_PALAVRAS_CHAVE = 12;
 
     function remove_ultimo_campo(evento)
     {
@@ -80,7 +114,8 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
                 return elemento;
         }).remove();
 
-        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ? MAX_LINKS - 1 : MAX_IMAGENS - 1))
+        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ? MAX_LINKS - 1 :
+                variavel == 'imagens' ? MAX_IMAGENS - 1 : MAX_PALAVRAS_CHAVE - 1))
             $(`#${nome_botao_adicionar}`).prop('disabled', false);
     }
 
@@ -95,33 +130,35 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
             if (variavel == 'links')
                 template_URL = $($.parseHTML(`{{ renderiza_tabelas_campos(form.links) }}`)).find(':nth-child(1)');
-            else
+            else if (variavel == 'imagens')
                 template_URL = $($.parseHTML(`{{ renderiza_tabelas_campos(form.imagens) }}`)).find(':nth-child(1)');
+            else
+                template_URL = $($.parseHTML(`{{ renderiza_tabelas_campos(form.palavras_chave) }}`)).find(':nth-child(1)');
 
             $(template_URL).children('[id *= -erro-]').remove();
             template_URL = $(template_URL).find(":nth-child(1)").get(0).outerHTML;
 
-            $(`#${variavel} > tbody`).append(template_URL);
+            $(`#${variavel} > tbody`).append(template_URL.replaceAll(new RegExp(`${variavel}-[0-9]+`, 'g'), variavel + '-' + 0));
 
             $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
 
             return;
         }
 
-        let ultimo_id_campo = String($(`#${variavel} > tbody > tr:last > th > label:first`).attr('for'));
+        let ultimo_id_campo = String($(`#${variavel} > tbody > tr:last > td > fieldset`).attr('name'));
         let [label_for_anterior, novo_id] = [ultimo_id_campo.split('-')[0], Number(ultimo_id_campo.split('-')[1]) + 1];
 
         let novo_campo = $(`#${variavel} > tbody > tr:last`).clone();
 
         $(novo_campo).find("[id *= -erro-]").remove();
 
-        $(novo_campo).html($(novo_campo).html().replaceAll(ultimo_id_campo, label_for_anterior + '-' + novo_id));
+        $(novo_campo).html($(novo_campo).html().replaceAll(new RegExp(`${label_for_anterior}-[0-9]+`, 'g'), label_for_anterior + '-' + novo_id));
 
         $(`#${variavel}`).append($(novo_campo).prop('outerHTML'));
 
         $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
 
-        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ?  MAX_LINKS : MAX_IMAGENS))
+        if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ?  MAX_LINKS : variavel == 'imagens' ? MAX_IMAGENS : MAX_PALAVRAS_CHAVE))
             $(`#${nome_botao_adicionar}`).prop('disabled', true);
     }
 
@@ -131,8 +168,12 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
     $('#adicionar_campo_imagem').on('click', {variavel : 'imagens', nome_botao_remover : 'remover_campo_imagem',
         nome_botao_adicionar : 'adicionar_campo_imagem', callback: remove_ultimo_campo}, adiciona_bloco);
 
+    $('#adicionar_campo_palavras_chave').on('click', {variavel : 'palavras_chave', nome_botao_remover : 'remover_campo_palavras_chave',
+        nome_botao_adicionar : 'adicionar_campo_palavras_chave', callback: remove_ultimo_campo}, adiciona_bloco);
+
     $('#links [name*="-remover_campo_link"]').on("click", {variavel: 'links', nome_botao_adicionar : 'adicionar_campo_link'}, remove_ultimo_campo);
     $('#imagens [name*="-remover_campo_imagem"]').on("click", {variavel: 'imagens', nome_botao_adicionar : 'adicionar_campo_imagem'}, remove_ultimo_campo);
+    $('#palavras_chave [name*="-remover_campo_palavras_chave"]').on("click", {variavel: 'palavras_chave', nome_botao_adicionar : 'adicionar_campo_palavras_chave'}, remove_ultimo_campo);
 
     $(':root').on("change", 'input[type="file"]', function (e) {
         const arquivos = e.target.files;
@@ -144,14 +185,15 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         }
     });
 
-    ['nome', 'trajetoria', 'producao', 'ultima_atualizacao'].forEach(campo => {
+    ['nome', 'trajetoria', 'producao', 'ultima_atualizacao', 'pesquisante',
+        'email_pesquisante', 'data_nascimento', 'genero', 'pagina'].forEach(campo => {
         $(`#${campo}`).on("input", function (evento) {
             $('#' + campo + '-erro').remove();
             $(evento.target).off("input");
         });
     });
 
-    ['links', 'imagens'].forEach(campo => {
+    ['links', 'imagens', 'palavras_chave'].forEach(campo => {
         $(`#${campo} td input`).on("input", function (evento) {
             $(evento.target).parent($(`#${evento.target.id}`)).next('[id *= -erro-]').remove();
             $(evento.target).off("input");
