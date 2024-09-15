@@ -16,14 +16,7 @@ def realiza_validacao_form_artista(form, arquivos):
 
     form.erros['imagens'] = [dict() for _ in range(0, form.imagens.__len__())]
     form.erros['links'] = [dict() for _ in range(0, form.links.__len__())]
-    form.erros['palavras_chave'] = [dict() for _ in range(0, form.palavras_chave.__len__())] 
-
-    i = 0
-
-    for campo in form.imagens:
-        retorna_mensagem_erro_campo_composto_form(form, "imagens", i, "fonte",  campo.fonte, "- É necessário inserir uma URL")
-
-        i += 1
+    form.erros['palavras_chave'] = [dict() for _ in range(0, form.palavras_chave.__len__())]
 
     i = 0
 
@@ -36,7 +29,6 @@ def realiza_validacao_form_artista(form, arquivos):
     i = 0
 
     for campo in form.links:
-        retorna_mensagem_erro_campo_composto_form(form, "links", i, "titulo_url",  campo.titulo_url, "- É necessário inserir um título para a URL")
         retorna_mensagem_erro_campo_composto_form(form, "links", i, "url",  campo.url, "- É necessário inserir uma URL")
         i += 1
 

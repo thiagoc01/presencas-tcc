@@ -20,7 +20,14 @@ class DataValida(object):
             mensagem = 'Insira uma data válida e que não esteja no futuro'
         self.mensagem = mensagem
 
+    def ajusta_dia(dia):
+
+        if dia.isoformat() == '1900-01-01':
+
+            return date.today()
+
     def __call__(self, form, field):
+
         if field.data:
             try:
                 if date.today() < date.fromisoformat(date.strftime(field.data, "%Y-%m-%d")):
@@ -29,26 +36,33 @@ class DataValida(object):
             except:
                 form.erros['ultima_atualizacao'] = "Insira uma data válida e anterior ou igual a de hoje"
                 raise ValidationError(self.mensagem)
+            
         
 class ImagensArtista(FlaskForm):
 
     titulo = StringField("Titulo", [Length(max = 128)], render_kw=dict(placeholder="Título da imagem (se não houver, deixe em branco)"))
+
     material = StringField("Material", [Length(max = 128)], render_kw=dict(placeholder="Material da obra (se não houver, deixe em branco)"))
+
     tamanho = StringField("Tamanho", [Length(max = 128)], render_kw=dict(placeholder="Tamanho em centímetros ou área física (se não houver, deixe em branco)"))
+
     data = StringField("Data da criação da obra", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+
     descricao = TextAreaField('Descrição', render_kw=dict(placeholder="Digite a descrição aqui"))
-    fonte = URLField('URL', [InputRequired("É necessário inserir um link"), URL(require_tld=False, message="Insira uma URL válida")], \
-                                        render_kw=dict(placeholder="http://", \
+
+    outras_infos = TextAreaField('Outras informações da imagem', render_kw=dict(placeholder="Digite outras informações da imagem, se necessário, como série etc."))
+
+    fonte = URLField('URL',render_kw=dict(placeholder="http://", \
                                         oninvalid="setCustomValidity('Insira uma URL válida')", \
                                         oninput="setCustomValidity('')"))
+    
     arquivo = FileField('Arquivo', render_kw=dict(required=True, oninput="setCustomValidity('')", \
                                     oninvalid="setCustomValidity('Insira um arquivo .jpg, .jpeg, .jfif ou .png')"))
+    
     remover_campo_imagem = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
 
 
 class UrlsArtista(FlaskForm):
-
-    titulo_url = StringField('Título da URL', [Length(max = 128), InputRequired("É necessário inserir o link")], render_kw=dict(placeholder="Título da URL"))
 
     url = URLField('URL', [InputRequired("É necessário inserir o link"), \
                 URL(require_tld=False, message="Insira uma URL válida")], render_kw=dict(placeholder="http://", \
@@ -92,7 +106,8 @@ class FormularioArtista(FlaskForm):
                                                                                         oninvalid="setCustomValidity('Insira uma URL válida')", \
                                                                                         oninput="setCustomValidity('')"))
 
-    ultima_atualizacao = DateField('Data da última atualização', format = ['%d/%m/%Y', '%Y-%m-%d'], \
+    ultima_atualizacao = DateField('Data da última atualização', format = ['%d/%m/%Y', '%Y-%m-%d', ''], \
+                                filters=[DataValida.ajusta_dia], \
                                 render_kw=dict(max=date.today(), \
                                 oninvalid=f'setCustomValidity("Selecione um valor que não seja depois de {date.strftime(date.today(), "%d/%m/%Y")}")', \
                                 oninput='setCustomValidity("")'), validators=[DataValida()])

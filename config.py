@@ -18,6 +18,8 @@ class Config(object):
     WTF_CSRF_ENABLED = True
     DEBUG_TB_ENABLED = False
     DEBUG_TB_INTERCEPT_REDIRECTS = False
+    TOKEN_REQUISICOES = env.get("TOKEN_REQUISICOES")
+    CKAN_URL = env.get("CKAN_URL")
 
 
 class DevelopmentConfig(Config):

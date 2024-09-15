@@ -17,7 +17,7 @@ db = SQLAlchemy(app)
 migrate = Migrate(app, db)
 
 from presencas.login.views import login_blueprint
-from presencas.formulario.views import formulario_blueprint
+from presencas.formularios.views import formulario_blueprint
 
 app.register_blueprint(login_blueprint)
 app.register_blueprint(formulario_blueprint)

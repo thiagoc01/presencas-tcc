@@ -1,12 +1,12 @@
 from flask import Blueprint, render_template, request
-from .formulario import FormularioArtista
+from .formulario_criacao import FormularioArtista
 from werkzeug.datastructures import ImmutableOrderedMultiDict
 from .validador import realiza_validacao_form_artista
+from .criador import cria_artista_recursos_ckan
 
 formulario_blueprint = Blueprint("formulario", __name__)
 
-
-@formulario_blueprint.route('/formulario', methods=['GET', 'POST'])
+@formulario_blueprint.route('/formulario_criacao', methods=['GET', 'POST'])
 def index():
 
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -18,16 +18,9 @@ def index():
     if request.method == "POST":
         if realiza_validacao_form_artista(form, request.files) == 1:   # Essa validação permite colocar as mensagens de erro no formulário
             return render_template('formulario/formulario.html', form = form)
-    
+        
         if form.validate_on_submit():
 
-            print(request.form)
-            print(request.files)
-
-            for i in form.links.data:
-                print(i)
-
-            for i in form.palavras_chave.data:
-                print(i)
+            cria_artista_recursos_ckan(form, request.files)
 
     return render_template('formulario/formulario.html', form = form)
