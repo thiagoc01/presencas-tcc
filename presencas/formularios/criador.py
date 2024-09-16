@@ -3,6 +3,7 @@ import requests
 import re
 from presencas import app
 from datetime import date
+import jsbeautifier
 
 class Artista:
 
@@ -138,6 +139,8 @@ class Requisicoes:
     
     def cria_dataset(self, params : dict):
 
+        ocorreu_erro = False
+
         url = self.ckan_url + 'package_create'
 
         params['name'] = unidecode.unidecode(params.get("name").lower().replace(" ", "_"))
@@ -149,10 +152,13 @@ class Requisicoes:
         else:
             imprime_vermelho(f"Erro ao criar o dataset {params.get('name')}")
             imprime_vermelho(resposta.json())
+            ocorreu_erro = True
 
-        return resposta.json()
+        return resposta.json(), ocorreu_erro
     
     def cria_recurso(self, params : dict, arquivo):
+
+        ocorreu_erro = False
 
         url = self.ckan_url + 'resource_create'
 
@@ -165,8 +171,9 @@ class Requisicoes:
         else:
             imprime_vermelho(f"Erro ao criar recurso {params['name']}")
             imprime_vermelho(resposta.json())
+            ocorreu_erro = True
 
-        return resposta.json()
+        return resposta.json(), ocorreu_erro
 
 def carregar_artista(nome_artista):
 
@@ -247,13 +254,26 @@ def cria_recurso_dataset(id_dataset, artista : Artista, imagem : str, requisicoe
 def cria_artista_recursos_ckan(form, arquivos):
 
     requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
+    respostas = []
 
     artista = Artista(form, arquivos)
 
-    resposta = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+    resposta, erro = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+    respostas.append(jsbeautifier.beautify(str(resposta)))
+
+    if erro:
+        return respostas, True
 
     id_dataset = resposta['result']['id']
 
     for imagem in artista.imagens:
 
-        cria_recurso_dataset(id_dataset, artista, imagem, requisicoes, arquivos)
+        resposta, erro = cria_recurso_dataset(id_dataset, artista, imagem, requisicoes, arquivos)
+        respostas.append(jsbeautifier.beautify(str(resposta)))
+
+        if erro:
+            return respostas, True
+        
+    respostas.append(jsbeautifier.beautify(str(resposta)))
+        
+    return respostas, False

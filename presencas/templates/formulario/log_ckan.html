@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Projeto Presenças
+
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/github-dark.min.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main>
+
+    {% if ocorreu_erro %}
+        <h1>Erro ao criar artista no repositório CKAN</h1>
+    {% else %}
+        <h1>Artista criado com sucesso</h1>
+    {% endif %}
+
+
+    <pre class="language-js">
+        {% for resposta in respostas %}
+            <code>{{ resposta }}</code>
+        {% endfor %}
+    </pre>
+</main>
+
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='highlight.min.js') }}"></script>
+<script>hljs.highlightAll();</script>
+{% endblock %}

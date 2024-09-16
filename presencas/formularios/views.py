@@ -7,7 +7,7 @@ from .criador import cria_artista_recursos_ckan
 formulario_blueprint = Blueprint("formulario", __name__)
 
 @formulario_blueprint.route('/formulario_criacao', methods=['GET', 'POST'])
-def index():
+def index_formulario_criacao_artista():
 
     request.parameter_storage_class = ImmutableOrderedMultiDict
 
@@ -21,6 +21,19 @@ def index():
         
         if form.validate_on_submit():
 
-            cria_artista_recursos_ckan(form, request.files)
+            respostas, ocorreu_erro = cria_artista_recursos_ckan(form, request.files)
+
+            return render_template('formulario/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro)
 
     return render_template('formulario/formulario.html', form = form)
+
+@formulario_blueprint.route('/formulario_adicao_obras_artista', methods=['GET', 'POST'])
+def index_formulario_adicao_obras_artista():
+
+    request.parameter_storage_class = ImmutableOrderedMultiDict
+
+    form = FormularioArtista(request.form)
+
+    form.erros = dict()
+
+    return render_template('formulario/formulario_recursos.html', form = form)

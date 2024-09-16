@@ -22,7 +22,7 @@ class DataValida(object):
 
     def ajusta_dia(dia):
 
-        if dia.isoformat() == '1900-01-01':
+        if dia is not None and dia.isoformat() == '1900-01-01':
 
             return date.today()
 

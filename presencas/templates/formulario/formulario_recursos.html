@@ -1,0 +1,36 @@
+{% extends "formulario/formulario.html" %}
+
+{% block title %}
+
+Projeto Presenças - Formulário de cadastro de obras para um artista
+
+{% endblock %}
+
+{% block content %}
+
+<main>
+
+    <form method="POST" enctype="multipart/form-data">
+        {{ form.csrf_token }}
+
+        <div>
+            {{ renderiza_campo(form.nome) }}
+            {{ renderiza_erro_campo(form.nome.name) }}
+        </div>
+
+        <div>
+
+            <h4>Lista de imagens</h4>
+
+            <fieldset name="imagens">
+                {{ renderiza_tabelas_campos(form.imagens) }}
+                <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
+            </fieldset>
+
+        </div>
+
+        <input type="submit" value="Adicionar obras">
+    </form>
+</main>
+
+{% endblock %}
