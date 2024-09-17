@@ -21,10 +21,11 @@ Projeto Presenças
     {% endif %}
 
 
-    <pre class="language-js">
-        {% for resposta in respostas %}
-            <code>{{ resposta }}</code>
-        {% endfor %}
+    <pre class="language-js" style="white-space: pre-wrap;">
+        <code>{% for resposta in respostas %}{{ resposta }}
+
+
+{% endfor %}</code>
     </pre>
 </main>
 
