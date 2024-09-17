@@ -27,58 +27,60 @@ class Artista:
 
     def _carrega_imagens(self, form, arquivos):
 
-        for campo in form.imagens:
+        if len(arquivos.to_dict().items()) != 0:
 
-            if campo.titulo == None or campo.titulo.data == '':
+            for campo in form.imagens:
 
-                titulo = arquivos.get(campo.name + '-arquivo').filename
+                if campo.titulo == None or campo.titulo.data == '':
 
-                if titulo.find('_retrato') != -1:
+                    titulo = arquivos.get(campo.name + '-arquivo').filename
 
-                    titulo = self.nome_completo
+                    if titulo.find('_retrato') != -1:
 
-            else:
-                titulo = campo.titulo.data
+                        titulo = self.nome_completo
 
-            self.imagens[titulo] = {}
-            self.imagens[titulo]['nome_arquivo'] = campo.name + '-arquivo'
-            self.imagens[titulo]['descricao'] = campo.descricao.data
+                else:
+                    titulo = campo.titulo.data
 
-            self.imagens[titulo]['titulo'] = titulo
+                self.imagens[titulo] = {}
+                self.imagens[titulo]['nome_arquivo'] = campo.name + '-arquivo'
+                self.imagens[titulo]['descricao'] = campo.descricao.data
 
-            if campo.material.data:
-                self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.material.data) \
-                        if self.imagens[titulo]["descricao"] != "" else campo.material.data
+                self.imagens[titulo]['titulo'] = titulo
+
+                if campo.material.data:
+                    self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.material.data) \
+                            if self.imagens[titulo]["descricao"] != "" else campo.material.data
+
+                if campo.tamanho.data:
                 
-            if campo.tamanho.data:
-            
-                self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.tamanho.data) \
-                        if self.imagens[titulo]["descricao"] != "" else campo.tamanho.data
-                
-            if campo.outras_infos.data:
+                    self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.tamanho.data) \
+                            if self.imagens[titulo]["descricao"] != "" else campo.tamanho.data
 
-                self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.outras_infos.data) \
-                        if self.imagens[titulo]["descricao"] != "" else campo.outras_infos.data
-            
-            if campo.tamanho.data:
-            
-                eArea = re.compile("[0-9\,]{1,5} *[xX] *[0-9\,]{1,5} *(cm)?")
-                eComprimento = re.compile("[0-9]{1,3}(?= *cm)")
+                if campo.outras_infos.data:
 
-                if eArea.match(campo.tamanho.data):
-                    self.imagens[titulo]['area'] = campo.tamanho.data
+                    self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.outras_infos.data) \
+                            if self.imagens[titulo]["descricao"] != "" else campo.outras_infos.data
 
-                elif eComprimento.search(campo.tamanho.data):
-                    achado = eComprimento.search(campo.tamanho.data)
-                    self.imagens[titulo]['comprimento'] = float(achado.group(0)) / 100.0
-            
-            if campo.data.data:
+                if campo.tamanho.data:
 
-                self.imagens[titulo]['ano'] = campo.data.data
+                    eArea = re.compile("[0-9\,]{1,5} *[xX] *[0-9\,]{1,5} *(cm)?")
+                    eComprimento = re.compile("[0-9]{1,3}(?= *cm)")
 
-            if campo.fonte.data:
+                    if eArea.match(campo.tamanho.data):
+                        self.imagens[titulo]['area'] = campo.tamanho.data
 
-                self.imagens[titulo]['fonte'] = campo.fonte.data                
+                    elif eComprimento.search(campo.tamanho.data):
+                        achado = eComprimento.search(campo.tamanho.data)
+                        self.imagens[titulo]['comprimento'] = float(achado.group(0)) / 100.0
+
+                if campo.data.data:
+
+                    self.imagens[titulo]['ano'] = campo.data.data
+
+                if campo.fonte.data:
+
+                    self.imagens[titulo]['fonte'] = campo.fonte.data
 
 
     def _inicializa_artista(self, form, arquivos):
@@ -92,8 +94,12 @@ class Artista:
 
         self._carrega_imagens(form, arquivos)
 
-        self.descricao = f"**Trajetória**\n<br>\n {form.trajetoria.data}"
-        self.descricao += f"\n<br>\n**Produção**\n<br>\n {form.producao.data}"
+        if form.trajetoria.data:
+
+            self.descricao = f"**Trajetória**\n<br>\n {form.trajetoria.data}"
+
+        if form.producao.data:
+            self.descricao += f"\n<br>\n**Produção**\n<br>\n {form.producao.data}"
 
         for campo in form.links:
 
@@ -111,11 +117,11 @@ class Artista:
 
             self.data_nascimento = form.data_nascimento.data
 
-        if form.email_pesquisante.data:
+        if form.email_pesquisante.data != None:
 
             self.email_pesquisante = form.email_pesquisante.data
 
-        if form.pesquisante.data:
+        if form.pesquisante.data != None:
 
             self.pesquisante = form.pesquisante.data
 
@@ -126,6 +132,28 @@ class Artista:
         for palavra_chave in form.palavras_chave:
 
             self.palavras_chave.append(palavra_chave.palavra_chave.data)
+
+class ArtistaImagens(Artista):
+
+    def __init__(self, form, arquivos):
+
+        self.nome = ""
+        self.sobrenome = ""
+        self.nome_completo = ""
+        self.imagens = {}
+
+        self._inicializa_artista(form, arquivos)
+
+    def _inicializa_artista(self, form, arquivos):
+
+        nome = self.nome_completo = form.nome.data
+
+        if len(nome.split(" ")) == 2:
+            self.nome, self.sobrenome = nome.split(" ")
+        else:
+            self.nome, self.sobrenome = nome.split(" ")[0], " ".join(nome.split()[1:])
+
+        self._carrega_imagens(form, arquivos)
 
 def imprime_vermelho(string): print("\033[91m{}\033[00m".format(string))
  
@@ -175,14 +203,6 @@ class Requisicoes:
 
         return resposta.json(), ocorreu_erro
 
-def carregar_artista(nome_artista):
-
-    artista = Artista()
-
-    artista.inicializa_artista(nome_artista)
-
-    return artista
-
 def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisicoes : Requisicoes):
 
     extras = [
@@ -191,21 +211,29 @@ def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisic
         {"key" : "gender" , "value" : artista.genero},
         {"key" : "birthday" , "value" : artista.data_nascimento},
         {"key" : "homepage" , "value" : artista.pagina},
-        {"key" : "modified" , "value" : artista.atualizacao},
-        {"key" : "links" , "value" : ",".join([link for link in artista.links])}
+        {"key" : "modified" , "value" : artista.atualizacao}
     ]
+
+    if artista.links[0] != None:
+        extras.append({"key" : "links" , "value" : ",".join([link for link in artista.links])})
 
     params = {
         "name"  : f"{artista.nome.lower()}_{artista.sobrenome.lower().replace(' ', '')}",
         "title" : f"{artista.nome} {artista.sobrenome}",
-        "maintainer" : artista.pesquisante,
-        "maintainer_email" : artista.email_pesquisante,
         "notes" : artista.descricao,
-        "tags" : [{"name" : nome} for nome in artista.palavras_chave],
         "groups" : [{"name" : nome_grupo}],
         "owner_org" : id_organizacao,
         "extras" : extras
     }
+
+    if artista.pesquisante != "":
+        params['maintainer'] = artista.pesquisante
+
+    if artista.email_pesquisante != "":
+        params['maintainer_email'] = artista.email_pesquisante
+
+    if artista.palavras_chave[0] != None:
+        params["tags"] = [{"name" : nome} for nome in artista.palavras_chave]
 
     return requisicoes.cria_dataset(params)
 
@@ -266,6 +294,8 @@ def cria_artista_recursos_ckan(form, arquivos):
 
     id_dataset = resposta['result']['id']
 
+    print(artista.imagens)
+
     for imagem in artista.imagens:
 
         resposta, erro = cria_recurso_dataset(id_dataset, artista, imagem, requisicoes, arquivos)
@@ -274,6 +304,21 @@ def cria_artista_recursos_ckan(form, arquivos):
         if erro:
             return respostas, True
         
-    respostas.append(jsbeautifier.beautify(str(resposta)))
+    return respostas, False
+
+def cria_recursos_ckan(form, arquivos, nome_artista):
+
+    requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
+    respostas = []
+
+    artista = ArtistaImagens(form, arquivos)
+
+    for imagem in artista.imagens:
+
+        resposta, erro = cria_recurso_dataset(nome_artista, artista, imagem, requisicoes, arquivos)
+        respostas.append(jsbeautifier.beautify(str(resposta)))
+
+        if erro:
+            return respostas, True
         
     return respostas, False

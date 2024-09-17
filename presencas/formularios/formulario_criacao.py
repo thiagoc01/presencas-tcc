@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from wtforms.fields import TextAreaField, StringField, URLField, FieldList, FormField, Field, DateField, FileField, EmailField
-from wtforms.validators import InputRequired, Length, ValidationError, URL, Email
+from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.widgets import TableWidget, html_params
 from datetime import date
 
@@ -25,6 +25,10 @@ class DataValida(object):
         if dia is not None and dia.isoformat() == '1900-01-01':
 
             return date.today()
+
+        elif dia is not None:
+
+            return dia
 
     def __call__(self, form, field):
 
@@ -64,16 +68,16 @@ class ImagensArtista(FlaskForm):
 
 class UrlsArtista(FlaskForm):
 
-    url = URLField('URL', [InputRequired("É necessário inserir o link"), \
-                URL(require_tld=False, message="Insira uma URL válida")], render_kw=dict(placeholder="http://", \
-                                                                                        oninvalid="setCustomValidity('Insira uma URL válida')", \
-                                                                                        oninput="setCustomValidity('')"))
+    url = URLField('URL', render_kw=dict(required=True, \
+                            placeholder="http://", \
+                            oninvalid="setCustomValidity('Insira uma URL válida')", \
+                            oninput="setCustomValidity('')"))
 
     remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover link"))
 
 class PalavrasChave(FlaskForm):
 
-    palavra_chave = StringField('', [InputRequired('É necessário inserir a palavra-chave')], render_kw=dict(placeholder='Palavra-chave'))
+    palavra_chave = StringField('', render_kw=dict(placeholder='Palavra-chave', required=True))
 
     remover_campo_palavras_chave = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
 
@@ -94,7 +98,7 @@ class FormularioArtista(FlaskForm):
 
     pesquisante = StringField('Pesquisante', render_kw=dict(placeholder="Pesquisante"))
 
-    email_pesquisante = StringField('E-mail pesquisante', [Email("Digite um e-mail válido")], render_kw=dict(placeholder="E-mail"))
+    email_pesquisante = EmailField('E-mail pesquisante', render_kw=dict(placeholder="E-mail"))
 
     data_nascimento = StringField("Data de nascimento", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
 
@@ -102,9 +106,9 @@ class FormularioArtista(FlaskForm):
 
     genero = StringField("Gênero", render_kw=dict(placeholder="Gênero"))
 
-    pagina = URLField('URL', [URL(require_tld=False, message="Insira uma URL válida")], render_kw=dict(placeholder="http://", \
-                                                                                        oninvalid="setCustomValidity('Insira uma URL válida')", \
-                                                                                        oninput="setCustomValidity('')"))
+    pagina = URLField('URL', render_kw=dict(placeholder="http://", \
+                            oninvalid="setCustomValidity('Insira uma URL válida')", \
+                            oninput="setCustomValidity('')"))
 
     ultima_atualizacao = DateField('Data da última atualização', format = ['%d/%m/%Y', '%Y-%m-%d', ''], \
                                 filters=[DataValida.ajusta_dia], \

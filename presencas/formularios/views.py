@@ -1,8 +1,10 @@
 from flask import Blueprint, render_template, request
 from .formulario_criacao import FormularioArtista
+from .formulario_recursos import FormularioRecursos
 from werkzeug.datastructures import ImmutableOrderedMultiDict
-from .validador import realiza_validacao_form_artista
-from .criador import cria_artista_recursos_ckan
+from .validador import ValidadorCriacaoArtista, ValidadorCriacaoObras
+from .criador import cria_artista_recursos_ckan, cria_recursos_ckan
+from presencas import app
 
 formulario_blueprint = Blueprint("formulario", __name__)
 
@@ -16,9 +18,10 @@ def index_formulario_criacao_artista():
     form.erros = dict()
 
     if request.method == "POST":
-        if realiza_validacao_form_artista(form, request.files) == 1:   # Essa validação permite colocar as mensagens de erro no formulário
+        validador = ValidadorCriacaoArtista()
+        if validador.realiza_validacao_form_artista(form, request.files) == 1:   # Essa validação permite colocar as mensagens de erro no formulário
             return render_template('formulario/formulario.html', form = form)
-        
+
         if form.validate_on_submit():
 
             respostas, ocorreu_erro = cria_artista_recursos_ckan(form, request.files)
@@ -32,8 +35,22 @@ def index_formulario_adicao_obras_artista():
 
     request.parameter_storage_class = ImmutableOrderedMultiDict
 
-    form = FormularioArtista(request.form)
+    form = FormularioRecursos(request.form)
 
     form.erros = dict()
+
+    if request.method == "POST":
+
+        validador = ValidadorCriacaoObras(app.config["TOKEN_REQUISICOES"])
+        nome, erro = validador.realiza_validacao_form_artista(form, request.files)
+
+        if erro == 1:
+            return render_template('formulario/formulario_recursos.html', form = form)
+        
+        if form.validate_on_submit():
+
+            respostas, ocorreu_erro = cria_recursos_ckan(form, request.files, nome)
+
+            return render_template('formulario/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro)
 
     return render_template('formulario/formulario_recursos.html', form = form)
