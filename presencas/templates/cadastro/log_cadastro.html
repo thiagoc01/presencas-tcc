@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Projeto Presenças
+
+{% endblock %}
+
+{% block content %}
+
+<main>
+
+    {% if erro != None %}
+        <h1>Erro ao {{ "criar" if cadastrar_usuario else "remover" }} usuário {{ usuario }}</h1>
+        <pre class="language-python" style="white-space: pre-wrap;">
+            <code>{{ erro }}</code>
+        </pre>
+    {% else %}
+        <h1>Usuário {{ usuario }} {{ "criado" if cadastrar_usuario else "removido" }} com sucesso</h1>
+    {% endif %}
+    
+</main>
+
+{% endblock %}

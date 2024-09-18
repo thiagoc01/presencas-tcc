@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, request
+from flask_login import login_required
 from .formulario_criacao import FormularioArtista
 from .formulario_recursos import FormularioRecursos
 from werkzeug.datastructures import ImmutableOrderedMultiDict
@@ -9,6 +10,7 @@ from presencas import app
 formulario_blueprint = Blueprint("formulario", __name__)
 
 @formulario_blueprint.route('/formulario_criacao/', methods=['GET', 'POST'])
+@login_required
 def index_formulario_criacao_artista():
 
     request.parameter_storage_class = ImmutableOrderedMultiDict
@@ -31,6 +33,7 @@ def index_formulario_criacao_artista():
     return render_template('formularios/formulario.html', form = form)
 
 @formulario_blueprint.route('/formulario_adicao_obras_artista/', methods=['GET', 'POST'])
+@login_required
 def index_formulario_adicao_obras_artista():
 
     request.parameter_storage_class = ImmutableOrderedMultiDict

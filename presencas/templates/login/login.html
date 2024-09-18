@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% from "formularios/macros.html" import renderiza_campo with context %}
+{% from "formularios/macros.html" import renderiza_campo, renderiza_erro_campo with context %}
 {% block title %}
 
 Projeto Presenças - Login
@@ -19,8 +19,13 @@ Projeto Presenças - Login
         {{ form.csrf_token }}
         <div>
             {{ renderiza_campo(form.usuario) }}
+            {{ renderiza_erro_campo(form.usuario.name) }}
             {{ renderiza_campo(form.senha) }}
+            {{ renderiza_erro_campo(form.senha.name) }}
             {{ renderiza_campo(form.lembrar_me )}}
+            {% if form.erros['login'] %}
+                {{ form.erros['login'] }}
+            {% endif %}
             <button type="submit" class="btn btn-primary">
                 Login <i class="bi bi-forward-fill"></i>
             </button>              

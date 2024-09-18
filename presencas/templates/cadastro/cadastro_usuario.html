@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% from "formularios/macros.html" import renderiza_campo, renderiza_erro_campo with context %}
+{% block title %}
+
+Projeto Presenças - Cadastrar ou remover usuário
+
+{% endblock %}
+
+{% block content %}
+
+{% if cadastrar_usuario %}
+
+    <main>
+
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div>
+                {{ renderiza_campo(form.usuario) }}
+                {{ renderiza_erro_campo(form.usuario.name) }}
+                {{ renderiza_campo(form.senha) }}
+                {{ renderiza_erro_campo(form.senha.name) }}
+                {{ renderiza_campo(form.confirmar_senha )}}
+                {{ renderiza_erro_campo(form.confirmar_senha.name) }}
+                {{ renderiza_campo(form.e_adm) }}
+                <button type="submit" class="btn btn-primary">
+                    Cadastrar usuário
+                </button>              
+            </div>
+        </form>
+
+    </main>
+
+{% else %}
+
+    <main>
+
+        <form method="POST">
+            {{ form.csrf_token }}
+            <div>
+                {{ renderiza_campo(form.usuario) }}
+                {{ renderiza_erro_campo(form.usuario.name) }}
+                <button type="submit" class="btn btn-primary">
+                    Remover usuário
+                </button>
+            </div>
+        </form>
+
+    </main>
+
+{% endif %}
+
+{% endblock %}

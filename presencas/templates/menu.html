@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<main>
+    <a href="{{ url_for('formulario.index_formulario_criacao_artista') }}">Cadastrar artista</a>
+    <a href="{{ url_for('formulario.index_formulario_adicao_obras_artista') }}">Cadastrar obras de um artista existente</a>
+    {% if current_user.e_adm %}
+        <a href="{{ url_for('cadastro.criar_usuario') }}">Cadastrar novo usuário</a>
+        <a href="{{ url_for('cadastro.remover_usuario') }}">Remover usuário</a>
+    {% endif %}
+</main>
+
+{% endblock %}
