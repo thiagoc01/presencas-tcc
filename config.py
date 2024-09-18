@@ -20,6 +20,8 @@ class Config(object):
     DEBUG_TB_INTERCEPT_REDIRECTS = False
     TOKEN_REQUISICOES = env.get("TOKEN_REQUISICOES")
     CKAN_URL = env.get("CKAN_URL")
+    REMEMBER_COOKIE_NAME="presencas_sessao"
+
 
 
 class DevelopmentConfig(Config):
@@ -27,6 +29,8 @@ class DevelopmentConfig(Config):
     DEBUG = True
     WTF_CSRF_ENABLED = False
     DEBUG_TB_ENABLED = True
+    SQLALCHEMY_DATABASE_URI = "sqlite:///testdb.sqlite"
+    REMEMBER_COOKIE_DURATION=86400
 
 
 class TestingConfig(Config):
@@ -40,3 +44,4 @@ class TestingConfig(Config):
 class ProductionConfig(Config):
     DEBUG = False
     DEBUG_TB_ENABLED = False
+    REMEMBER_COOKIE_DURATION=2592000

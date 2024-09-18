@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% from "formulario/macros.html" import renderiza_erro_campo, renderiza_campo, renderiza_erro_lista_campos, renderiza_tabelas_campos with context %}
 {% block title %}
 
 Projeto Presenças - Formulário de cadastro de artistas e obras
@@ -102,48 +102,3 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 <script src="{{ url_for('static', filename='formulario_criacao_js.min.js') }}"></script>
 
 {% endblock %}
-
-{% macro renderiza_tabelas_campos(campo_form) -%}
-    <table id="{{ campo_form.name }}">
-        {% for i in range(0, campo_form|length) %}
-            <tr>
-                <th><label for="{{ campo_form.name }}-{{i}}"></label></th>
-                <td>
-                    <fieldset name="{{ campo_form[i].name }}">
-                        {% for campo in campo_form[i] %}
-                            {{ renderiza_campo(campo) }}
-                            {% set indice_nome_var = campo.name.split('-')|length %}
-                            {% set nome_var = campo.name.split('-')[indice_nome_var - 1] %}
-                            {{ renderiza_erro_lista_campos(campo_form.name, i, nome_var ) }}
-                        {% endfor %}       
-                    </fieldset>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
-{%- endmacro %}
-
-{% macro renderiza_campo(campo) -%}
-    <div>
-        {{ campo.label }}
-        {{ campo }}
-    </div>
-{%- endmacro %}
-
-{% macro renderiza_erro_campo(campo) -%}
-    {% if form.erros.get(campo) %}
-        <div id="{{ campo }}-erro">
-            {{ form.erros.get(campo) }}
-        </div>
-    {% endif %}
-{%- endmacro %}
-
-{% macro renderiza_erro_lista_campos(campo, indice, erro_var) -%}
-    {% if form.erros.get(campo) != None %}
-        {% if form.erros.get(campo)[indice].get(erro_var) %}
-            <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}">
-                {{ form.erros.get(campo)[indice].get(erro_var) }}
-            </div>
-        {% endif %}
-    {% endif %}
-{%- endmacro %}
