@@ -97,8 +97,12 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 {% endblock %}
 
 {% block js %}
-
+<script type="text/javascript">
+    const A = `{{ renderiza_tabelas_campos(form.links) }}`
+    const B = `{{ renderiza_tabelas_campos(form.imagens) }}`
+    const C = `{{ renderiza_tabelas_campos(form.palavras_chave) }}`
+</script>
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='formulario_criacao_js.min.js') }}"></script>
+<script src="{{ url_for('static', filename='formulario_criacao_js.min.js') }}" type="text/javascript"></script>
 
 {% endblock %}

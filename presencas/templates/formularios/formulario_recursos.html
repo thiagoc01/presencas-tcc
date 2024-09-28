@@ -36,7 +36,9 @@ Projeto Presenças - Formulário de cadastro de obras para um artista
 {% endblock %}
 
 {% block js %}
-
+<script type="text/javascript">
+    const A = `{{ renderiza_tabelas_campos(form.imagens) }}`
+</script>
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='formulario_recursos_js.min.js') }}"></script>
 
