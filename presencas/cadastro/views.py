@@ -26,7 +26,7 @@ def login():
             return redirect(url_for("menu"))
 
         else:
-            form.erros['login'] = '- Nome de usuário ou senha incorretos'
+            form.erros['login'] = 'Nome de usuário ou senha incorretos'
 
     return render_template("login/login.html", form = form)
 

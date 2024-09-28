@@ -1,0 +1,13 @@
+<header>
+    <img src="{{ url_for('static', filename = 'logo.png') }}" alt="Logo do Projeto Presenças" width="50" height="50">
+
+    {% block titulo_pagina %}{% endblock %}
+    {% if current_user.is_authenticated %}
+        <nav>
+            <ul>
+                <li><a href="{{ url_for('menu') }}"><i class="bi bi-list" style="font-size: 50px;"></i></a></li>
+                <li><a href="{{ url_for('cadastro.logout') }}"><i class="bi bi-box-arrow-right" style="font-size: 50px;"></i></a></li>
+            </ul>
+        </nav>
+    {% endif %}
+</header>

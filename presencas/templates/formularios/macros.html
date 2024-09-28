@@ -27,8 +27,8 @@
 
 {% macro renderiza_erro_campo(campo) -%}
     {% if form.erros.get(campo) %}
-        <div id="{{ campo }}-erro">
-            {{ form.erros.get(campo) }}
+        <div id="{{ campo }}-erro" class="p-3 m-3 d-flex gap-2 justify-content-center align-items-center text-center">
+            <i class="fa fa-close fs-2"></i>{{ form.erros.get(campo) }}
         </div>
     {% endif %}
 {%- endmacro %}
@@ -36,8 +36,8 @@
 {% macro renderiza_erro_lista_campos(campo, indice, erro_var) -%}
     {% if form.erros.get(campo) != None %}
         {% if form.erros.get(campo)[indice].get(erro_var) %}
-            <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}">
-                {{ form.erros.get(campo)[indice].get(erro_var) }}
+            <div id="{{ campo }}-{{ indice }}-erro-{{ erro_var }}" class="p-3 m-3 d-flex gap-2 justify-content-center align-items-center text-center">
+                <i class="fa fa-close fs-2"></i>{{ form.erros.get(campo)[indice].get(erro_var) }}
             </div>
         {% endif %}
     {% endif %}

@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+@media (max-width: 768px) {
+    .login-logo {
+        width: 75% !important;
+    }
+
+    [id *= "erro"] {
+        height: auto !important;
+    }
+}
+
+.login-logo {
+    width: 40% !important;
+}
+
+.fundo {
+    background-color: rgba(234, 233, 233, 0.4);
+    box-shadow: 2px 2px 12px 2px rgba(0, 0, 0, 0.6);
+    border-radius: 5%;
+}
+
+[id *= "erro"] {
+    background-color: #e9434b;
+    color: white;
+    height: 2.5rem;
+}
+
+input {
+    border: transparent;
+    border-block-end: 1px solid rgb(219, 4, 4, 0.6);
+    background: transparent;
+    color: rgb(47, 46, 46);
+    font-weight: 500;
+    font-size: 1.5rem;
+    outline: none;
+}
+
+.animacao-entrada {
+    position: relative;
+}
+
+.animacao-entrada span {
+    position: absolute;
+    color: rgb(47, 46, 46);
+    top: 0;
+    left: 3%;
+    transition: all 0.5s;
+}
+
+.animacao-entrada input:valid + span,
+.animacao-entrada input:focus + span {
+  transform: translateY(-80%);
+}
+
+.animacao-entrada input:focus, .animacao-entrada input:valid{
+    border-color: rgba(2, 151, 17, 0.6);
+  }
+
+.animacao-entrada input:focus + span {
+  color: red;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+main {
+    background: linear-gradient(156deg, rgba(255,186,69,1) 0%, rgba(247,205,121,1) 50%, rgba(255,186,69,1) 100%);
+}
+
+.bg-light {
+    background-color: #d5d5d5 !important;
+}
+
+.btn-primary, .btn-primary:active, .btn-primary:visited {
+    background-color: green !important;
+}
+
+.btn-primary:hover {
+    background-color: rgb(57, 229, 57) !important;
+}
