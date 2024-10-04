@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+ul {
+    list-style: none;
+}
+
+header li {
+    font-size: 2rem;
+    color: white;
+}
+
+header {
+    background: linear-gradient(156deg, rgba(1,117,47,1) 0%, rgba(32,143,66,1) 52%, rgba(11,66,25,1) 100%); 
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+img {
+    width: 3rem;
+    height: 100%;
+}
+
+.titulo-login {
+    color: white;
+    font-size: 2rem;
+}

@@ -1,13 +1,10 @@
-<header>
-    <img src="{{ url_for('static', filename = 'logo.png') }}" alt="Logo do Projeto Presenças" width="50" height="50">
+<header class="d-flex justify-content-between mb-2">
+    <img src="{{ url_for('static', filename = 'logo.png') }}" alt="Logo do Projeto Presenças" class="ms-1 mt-2">
 
-    {% block titulo_pagina %}{% endblock %}
-    {% if current_user.is_authenticated %}
-        <nav>
-            <ul>
-                <li><a href="{{ url_for('menu') }}"><i class="bi bi-list" style="font-size: 50px;"></i></a></li>
-                <li><a href="{{ url_for('cadastro.logout') }}"><i class="bi bi-box-arrow-right" style="font-size: 50px;"></i></a></li>
-            </ul>
-        </nav>
-    {% endif %}
+    <nav>
+        <ul class="d-flex gap-3 justify-content-around mt-2">
+            <li><a href="{{ url_for('menu') }}"><i class="bi bi-list text-light"></i></a></li>
+            <li><a href="{{ url_for('cadastro.logout') }}"><i class="bi bi-box-arrow-right me-1 text-light"></i></a></li>
+        </ul>
+    </nav>
 </header>

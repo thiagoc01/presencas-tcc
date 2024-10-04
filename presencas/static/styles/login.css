@@ -61,14 +61,6 @@ input {
   color: red;
 }
 
-body {
-    font-family: 'Montserrat', sans-serif !important;
-}
-
-main {
-    background: linear-gradient(156deg, rgba(255,186,69,1) 0%, rgba(247,205,121,1) 50%, rgba(255,186,69,1) 100%);
-}
-
 .bg-light {
     background-color: #d5d5d5 !important;
 }
