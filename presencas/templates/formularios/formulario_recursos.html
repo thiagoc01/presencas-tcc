@@ -8,28 +8,38 @@ Projeto Presenças - Formulário de cadastro de obras para um artista
 
 {% block content %}
 
-<main>
+<main class="m-3 p-4 mx-auto">
 
-    <form method="POST" enctype="multipart/form-data">
+    <form class="d-flex flex-column align-items-center" method="POST" enctype="multipart/form-data">
         {{ form.csrf_token }}
 
-        <div>
-            {{ renderiza_campo(form.nome) }}
+        <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+            {{ renderiza_campo(form.nome, "mb-2", "", '<span><i class="fa-solid fa-person pe-2"></i>Nome</span>') }}
             {{ renderiza_erro_campo(form.nome.name) }}
         </div>
 
-        <div>
+        <div class="d-flex flex-column align-items-center justify-content-center align-content-center multicampos">
 
-            <h4>Lista de imagens</h4>
+            <h4 class="align-self-start mb-5 ms-1"><i class="fa-solid fa-image pe-2"></i>Lista de imagens</h4>
+            {% set spans = {
+                'titulo' : '<span class="mt-3 ms-2"><i class="bi bi-book-fill pe-2"></i>Título</span>',
+                'material' : '<span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>',
+                'tamanho' : '<span class="mt-3 ms-2"><i class="fa-solid fa-up-right-and-down-left-from-center pe-2"></i>Tamanho</span>',
+                'data' : '<span class="mt-3 ms-2"><i class="fa-solid fa-calendar pe-2"></i>Data da criação da obra</span>',
+                'descricao' : '<span class="mt-3 ms-2"><i class="fa-solid fa-quote-left pe-2"></i><i class="fa-solid fa-quote-right pe-2"></i>Descrição</span>',
+                'outras_infos' : '<span class="mt-3 ms-2"><i class="fa-solid fa-ellipsis pe-2"></i>Outras informações da imagem</span>',
+                'fonte' : '<span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>',
+                'arquivo' : '<span class="mt-3 ms-2"><i class="fa-solid fa-file pe-2"></i>Arquivo</span>'
+            } %}
 
-            <fieldset name="imagens">
-                {{ renderiza_tabelas_campos(form.imagens) }}
-                <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
+            <fieldset name="imagens" class="w-100">
+                {{ renderiza_tabelas_campos(form.imagens, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_imagem" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar campo</button></div>
             </fieldset>
 
         </div>
 
-        <input type="submit" value="Adicionar obras">
+        <input class="w-100 botao botao-criar" type="submit" value="Adicionar obras">
     </form>
 </main>
 
@@ -37,9 +47,123 @@ Projeto Presenças - Formulário de cadastro de obras para um artista
 
 {% block js %}
 <script type="text/javascript">
-    const A = `{{ renderiza_tabelas_campos(form.imagens) }}`
+    const A = `<table id="imagens" class="w-100">
+    <tbody>
+        
+            <tr>
+                <th><label for="imagens-0"></label></th>
+                <td>
+                    <fieldset name="imagens-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-titulo"></label>
+        <input class="mt-4" id="imagens-0-titulo" maxlength="128" name="imagens-0-titulo" placeholder="Título da imagem (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="bi bi-book-fill pe-2"></i>Título</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-material"></label>
+        <input class="mt-4" id="imagens-0-material" maxlength="128" name="imagens-0-material" placeholder="Material da obra (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-tamanho"></label>
+        <input class="mt-4" id="imagens-0-tamanho" maxlength="128" name="imagens-0-tamanho" placeholder="Tamanho em centímetros ou área física (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-up-right-and-down-left-from-center pe-2"></i>Tamanho</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-data"></label>
+        <input class="mt-4" id="imagens-0-data" maxlength="128" name="imagens-0-data" placeholder="Ano ou mês/ano ou dia/mês/ano (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-calendar pe-2"></i>Data da criação da obra</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-descricao"></label>
+        <textarea class="mt-4" id="imagens-0-descricao" name="imagens-0-descricao" placeholder="">
+</textarea>
+        <span class="mt-3 ms-2"><i class="fa-solid fa-quote-left pe-2"></i><i class="fa-solid fa-quote-right pe-2"></i>Descrição</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-outras_infos"></label>
+        <textarea class="mt-4" id="imagens-0-outras_infos" name="imagens-0-outras_infos" placeholder="Se houver, digite outras informações da imagem, se necessário, como série etc.">
+</textarea>
+        <span class="mt-3 ms-2"><i class="fa-solid fa-ellipsis pe-2"></i>Outras informações da imagem</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-fonte"></label>
+        <input class="mt-4" id="imagens-0-fonte" name="imagens-0-fonte" oninput="setCustomValidity(&#39;&#39;)" oninvalid="setCustomValidity(&#39;Insira uma URL válida&#39;)" placeholder="http://" type="url" value="">
+        <span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start w-100 p-2">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-file pe-2"></i>Arquivo</span>
+        <label class="enviar-arquivo fs-6 pb-1 d-block mt-3" for="imagens-0-arquivo"><i class="fa-solid fa-upload"></i> Procurar...</label>
+        <input accept=".png, .jpeg, .jpg, .jfif" class="d-block fs-6 pb-1" id="imagens-0-arquivo" name="imagens-0-arquivo" oninput="setCustomValidity(&#39;&#39;)" oninvalid="setCustomValidity(&#39;Insira um arquivo .jpg, .jpeg, .jfif ou .png&#39;)" required type="file">
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="imagens-0-remover_campo_imagem" class="botao botao-remover p-2" name="imagens-0-remover_campo_imagem" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+        
+    </tbody>
+    </table>`
+    const B = A
+    const C = A
 </script>
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='formulario_recursos_js.min.js') }}"></script>
+<script src="{{ url_for('static', filename='formulario_js.min.js') }}"></script>
 
 {% endblock %}

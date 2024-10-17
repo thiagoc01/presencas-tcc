@@ -24,13 +24,13 @@ Projeto Presenças - Login
                         <input id="usuario" name="usuario" required type="text" value="">
                         <span onclick="$('#usuario').focus();"><i class="fa-solid fa-user"></i>   Usuário</span>              
                     </div>
-                    {{ renderiza_erro_campo(form.usuario.name) }}
+                    {{ renderiza_erro_campo(form.usuario.name, "justify-content-center align-items-center") }}
                     <div class="d-flex align-items-center ps-2 pe-2 mt-3 mb-3 animacao-entrada">
                         <label for="senha"></label>
                         <input id="senha" name="senha" required type="password" value="">
                         <span onclick="$('#senha').focus();"><i class="fa-solid fa-key"></i>   Senha</span>
                     </div>
-                    {{ renderiza_erro_campo(form.senha.name) }}
+                    {{ renderiza_erro_campo(form.senha.name, "justify-content-center align-items-center") }}
                     <div class="d-flex gap-3 p-3">
                         <label for="lembrar_me">Permanecer conectado</label>
                         <input id="lembrar_me" name="lembrar_me" type="checkbox" value="y">

@@ -30,7 +30,7 @@ def load_user(id_usuario):
 def index():
     return redirect(url_for('cadastro.login'))
 
-@app.route("/menu", methods=["GET"])
+@app.route("/menu/", methods=["GET"])
 @login_required
 def menu():
     return render_template('menu.html')

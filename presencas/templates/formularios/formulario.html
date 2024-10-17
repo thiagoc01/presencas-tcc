@@ -6,103 +6,290 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
 
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/formulario.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<main>
+<main class="m-3 p-4 mx-auto">
 
-    <form method="POST" enctype="multipart/form-data">
+    <form class="d-flex flex-column align-items-center" method="POST" enctype="multipart/form-data">
         {{ form.csrf_token }}
 
-        <div>
-            {{ renderiza_campo(form.nome) }}
+        <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+            {{ renderiza_campo(form.nome, "mb-2", "", '<span><i class="fa-solid fa-person pe-2"></i>Nome</span>') }}
             {{ renderiza_erro_campo(form.nome.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.trajetoria) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.trajetoria, "", "mt-4", '<span><i class="fa-solid fa-road pe-2"></i>Trajetória</span>') }}
             {{ renderiza_erro_campo(form.trajetoria.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.producao) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.producao, "", "mt-4", '<span><i class="bi bi-camera-reels-fill pe-2"></i>Produção</span>') }}
             {{ renderiza_erro_campo(form.producao.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.pesquisante) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.pesquisante, "", "mt-4", '<span><i class="bi bi-search pe-2"></i>Pesquisante</span>') }}
             {{ renderiza_erro_campo(form.pesquisante.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.email_pesquisante) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.email_pesquisante, "", "mt-4", '<span><i class="bi bi-envelope-at-fill pe-2"></i>E-mail pesquisante</span>') }}
             {{ renderiza_erro_campo(form.email_pesquisante.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.data_nascimento) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.data_nascimento, "", "mt-4", '<span><i class="bi bi-cake-fill pe-2"></i>Data de nascimento</span>') }}
             {{ renderiza_erro_campo(form.data_nascimento.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.genero) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.genero, "", "mt-4", '<span><i class="bi bi-gender-neuter pe-2"></i>Gênero</span>') }}
             {{ renderiza_erro_campo(form.genero.name) }}
         </div>
 
-        <div>
-            {{ renderiza_campo(form.pagina) }}
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.pagina, "", "mt-4", '<span><i class="bi bi-link-45deg pe-2"></i>URL</span>') }}
             {{ renderiza_erro_campo(form.pagina.name) }}
         </div>
 
-        <div>
+        <div class="d-flex flex-column align-items-center justify-content-center align-content-center multicampos">
 
-            <h4>Lista de imagens</h4>
+          <h4 class="align-self-start mb-5 ms-1"><i class="fa-solid fa-image pe-2"></i>Lista de imagens</h4>
+            {% set spans = {
+                'titulo' : '<span class="mt-3 ms-2"><i class="bi bi-book-fill pe-2"></i>Título</span>',
+                'material' : '<span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>',
+                'tamanho' : '<span class="mt-3 ms-2"><i class="fa-solid fa-up-right-and-down-left-from-center pe-2"></i>Tamanho</span>',
+                'data' : '<span class="mt-3 ms-2"><i class="fa-solid fa-calendar pe-2"></i>Data da criação da obra</span>',
+                'descricao' : '<span class="mt-3 ms-2"><i class="fa-solid fa-quote-left pe-2"></i><i class="fa-solid fa-quote-right pe-2"></i>Descrição</span>',
+                'outras_infos' : '<span class="mt-3 ms-2"><i class="fa-solid fa-ellipsis pe-2"></i>Outras informações da imagem</span>',
+                'fonte' : '<span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>',
+                'arquivo' : '<span class="mt-3 ms-2"><i class="fa-solid fa-file pe-2"></i>Arquivo</span>'
+            } %}
 
-            <fieldset name="imagens">
-                {{ renderiza_tabelas_campos(form.imagens) }}
-                <button id="adicionar_campo_imagem" type="button">Adicionar campo</button>
+            <fieldset name="imagens" class="w-100">
+                {{ renderiza_tabelas_campos(form.imagens, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_imagem" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar campo</button></div>
             </fieldset>
 
         </div>
 
-        <div>
+        <div class="d-flex flex-column multicampos">
+            {% set spans = {'url' : '<span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>'} %}
+            <h4 class="align-self-start ms-1 mb-5"><i class="bi bi-link-45deg pe-2"></i>Links</h4>
 
-            <h4>Links</h4>
-
-            <fieldset name="links">
-                {{ renderiza_tabelas_campos(form.links) }}
-                <button id="adicionar_campo_link" type="button">Adicionar link</button>
+            <fieldset name="links" class="w-100">
+                {{ renderiza_tabelas_campos(form.links, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_link" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar link</button></div>
             </fieldset>
 
         </div>
 
-        <div>
-            <h4>Palavras-chave</h4>
+        <div class="d-flex flex-column align-items-center justify-content-center align-content-center multicampos">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-key pe-2"></i>Palavras-chave</h4>
 
-            <fieldset name="palavras_chave">
+            <fieldset name="palavras_chave" class="w-100">
                 {{ renderiza_tabelas_campos(form.palavras_chave) }}
-                <button id="adicionar_campo_palavras_chave" type="button">Adicionar campo</button>
+                <div class="text-center mb-3"><button id="adicionar_campo_palavras_chave" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar campo</button></div>
             </fieldset>
         </div>
 
-        <div>
-            <h4>Última atualização</h4>
+        <div class="d-flex flex-column mb-3 w-100">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-clock pe-2"></i>Última atualização</h4>
             {{ form.ultima_atualizacao }}
             {{ renderiza_erro_campo(form.ultima_atualizacao.name) }}
         </div>
 
-        <input type="submit" value="Criar artista">
+        <input class="w-100 botao botao-criar" type="submit" value="Criar artista">
     </form>
 </main>
-
 {% endblock %}
 
 {% block js %}
 <script type="text/javascript">
-    const A = `{{ renderiza_tabelas_campos(form.links) }}`
-    const B = `{{ renderiza_tabelas_campos(form.imagens) }}`
-    const C = `{{ renderiza_tabelas_campos(form.palavras_chave) }}`
+    const A = `<table id="links" class="w-100">
+        
+            <tr>
+                <th><label for="links-0"></label></th>
+                <td>
+                    <fieldset name="links-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="links-0-url"></label>
+        <input class="mt-4" id="links-0-url" name="links-0-url" oninput="setCustomValidity(&#39;&#39;)" oninvalid="setCustomValidity(&#39;Insira uma URL válida&#39;)" placeholder="http://" required type="url" value="">
+        <span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="links-0-remover_campo_link" class="botao botao-remover p-2" name="links-0-remover_campo_link" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover link</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+        
+    </table>`
+    const B = `<table id="imagens" class="w-100">
+    <tbody>
+        
+            <tr>
+                <th><label for="imagens-0"></label></th>
+                <td>
+                    <fieldset name="imagens-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-titulo"></label>
+        <input class="mt-4" id="imagens-0-titulo" maxlength="128" name="imagens-0-titulo" placeholder="Título da imagem (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="bi bi-book-fill pe-2"></i>Título</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-material"></label>
+        <input class="mt-4" id="imagens-0-material" maxlength="128" name="imagens-0-material" placeholder="Material da obra (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-tamanho"></label>
+        <input class="mt-4" id="imagens-0-tamanho" maxlength="128" name="imagens-0-tamanho" placeholder="Tamanho em centímetros ou área física (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-up-right-and-down-left-from-center pe-2"></i>Tamanho</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-data"></label>
+        <input class="mt-4" id="imagens-0-data" maxlength="128" name="imagens-0-data" placeholder="Ano ou mês/ano ou dia/mês/ano (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-calendar pe-2"></i>Data da criação da obra</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-descricao"></label>
+        <textarea class="mt-4" id="imagens-0-descricao" name="imagens-0-descricao" placeholder="">
+</textarea>
+        <span class="mt-3 ms-2"><i class="fa-solid fa-quote-left pe-2"></i><i class="fa-solid fa-quote-right pe-2"></i>Descrição</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-outras_infos"></label>
+        <textarea class="mt-4" id="imagens-0-outras_infos" name="imagens-0-outras_infos" placeholder="Se houver, digite outras informações da imagem, se necessário, como série etc.">
+</textarea>
+        <span class="mt-3 ms-2"><i class="fa-solid fa-ellipsis pe-2"></i>Outras informações da imagem</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="imagens-0-fonte"></label>
+        <input class="mt-4" id="imagens-0-fonte" name="imagens-0-fonte" oninput="setCustomValidity(&#39;&#39;)" oninvalid="setCustomValidity(&#39;Insira uma URL válida&#39;)" placeholder="http://" type="url" value="">
+        <span class="mt-3 ms-2"><i class="bi bi-link-45deg pe-2"></i>URL</span>
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start w-100 p-2">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-file pe-2"></i>Arquivo</span>
+        <label class="enviar-arquivo fs-6 pb-1 d-block mt-3" for="imagens-0-arquivo"><i class="fa-solid fa-upload"></i> Procurar...</label>
+        <input accept=".png, .jpeg, .jpg, .jfif" class="d-block fs-6 pb-1" id="imagens-0-arquivo" name="imagens-0-arquivo" oninput="setCustomValidity(&#39;&#39;)" oninvalid="setCustomValidity(&#39;Insira um arquivo .jpg, .jpeg, .jfif ou .png&#39;)" required type="file">
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="imagens-0-remover_campo_imagem" class="botao botao-remover p-2" name="imagens-0-remover_campo_imagem" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+        
+    </tbody>
+    </table>`
+    const C = `<table id="palavras_chave" class="w-100">
+        
+            <tr>
+                <th><label for="palavras_chave-0"></label></th>
+                <td>
+                    <fieldset name="palavras_chave-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="palavras_chave-0-palavra_chave"></label>
+        <input class="mt-4" id="palavras_chave-0-palavra_chave" name="palavras_chave-0-palavra_chave" placeholder="" required type="text" value="">
+        
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="palavras_chave-0-remover_campo_palavras_chave" class="botao botao-remover p-2" name="palavras_chave-0-remover_campo_palavras_chave" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+        
+    </table>`
 </script>
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
-<script src="{{ url_for('static', filename='formulario_criacao_js.min.js') }}" type="text/javascript"></script>
+<script src="{{ url_for('static', filename='formulario_js.min.js') }}" type="text/javascript"></script>
 
 {% endblock %}

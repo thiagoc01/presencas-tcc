@@ -3,6 +3,7 @@ from wtforms.fields import TextAreaField, StringField, URLField, FieldList, Form
 from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.widgets import TableWidget, html_params
 from datetime import date
+from jinja2.filters import do_mark_safe
 
 def gera_botao_sem_acao(field, **kwargs):
     kwargs.setdefault('type', 'button')
@@ -44,69 +45,75 @@ class DataValida(object):
         
 class ImagensArtista(FlaskForm):
 
-    titulo = StringField("Titulo", [Length(max = 128)], render_kw=dict(placeholder="Título da imagem (se não houver, deixe em branco)"))
+    titulo = StringField("", [Length(max = 128)],
+                        render_kw=dict(placeholder="Título da imagem (se houver)"))
 
-    material = StringField("Material", [Length(max = 128)], render_kw=dict(placeholder="Material da obra (se não houver, deixe em branco)"))
+    material = StringField("", [Length(max = 128)],
+                           render_kw=dict(placeholder="Material da obra (se houver)"))
 
-    tamanho = StringField("Tamanho", [Length(max = 128)], render_kw=dict(placeholder="Tamanho em centímetros ou área física (se não houver, deixe em branco)"))
+    tamanho = StringField("", [Length(max = 128)],
+                          render_kw=dict(placeholder="Tamanho em centímetros ou área física (se houver)"))
 
-    data = StringField("Data da criação da obra", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+    data = StringField("", [Length(max = 128)],
+                       render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano (se houver)"))
 
-    descricao = TextAreaField('Descrição', render_kw=dict(placeholder="Digite a descrição aqui"))
+    descricao = TextAreaField('', render_kw=dict(placeholder=""))
 
-    outras_infos = TextAreaField('Outras informações da imagem', render_kw=dict(placeholder="Digite outras informações da imagem, se necessário, como série etc."))
+    outras_infos = TextAreaField('',
+                                render_kw=dict(placeholder="Se houver, digite outras informações da imagem, se necessário, como série etc."))
 
-    fonte = URLField('URL',render_kw=dict(placeholder="http://", \
+    fonte = URLField('', render_kw=dict(placeholder="http://", \
                                         oninvalid="setCustomValidity('Insira uma URL válida')", \
                                         oninput="setCustomValidity('')"))
     
-    arquivo = FileField('Arquivo', render_kw=dict(required=True, oninput="setCustomValidity('')", \
-                                    oninvalid="setCustomValidity('Insira um arquivo .jpg, .jpeg, .jfif ou .png')"))
+    arquivo = FileField(do_mark_safe('<i class="fa-solid fa-upload"></i> Procurar...'), render_kw=dict(required=True, oninput="setCustomValidity('')", \
+                                    oninvalid="setCustomValidity('Insira um arquivo .jpg, .jpeg, .jfif ou .png')",
+                                    accept=".png, .jpeg, .jpg, .jfif"))
     
-    remover_campo_imagem = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
+    remover_campo_imagem = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo=do_mark_safe('<i class="fa-solid fa-xmark pe-2"></i>Remover campo')))
 
 
 class UrlsArtista(FlaskForm):
 
-    url = URLField('URL', render_kw=dict(required=True, \
+    url = URLField('', render_kw=dict(required=True, \
                             placeholder="http://", \
                             oninvalid="setCustomValidity('Insira uma URL válida')", \
                             oninput="setCustomValidity('')"))
 
-    remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover link"))
+    remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover link'))
 
 class PalavrasChave(FlaskForm):
 
-    palavra_chave = StringField('', render_kw=dict(placeholder='Palavra-chave', required=True))
+    palavra_chave = StringField('', render_kw=dict(placeholder='', required=True))
 
-    remover_campo_palavras_chave = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo="Remover campo"))
+    remover_campo_palavras_chave = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
 
 class FormularioArtista(FlaskForm):
 
     class Meta:
         csrf = True
 
-    nome = StringField('Nome', [InputRequired("Insira o nome")], render_kw=dict(placeholder="Nome"))
+    nome = StringField('', [InputRequired("Insira o nome")], render_kw=dict(placeholder=""))
 
-    trajetoria = TextAreaField('Trajetória', [InputRequired("É necessária a trajetória")], render_kw=dict(placeholder="Digite a trajetória aqui"))
+    trajetoria = TextAreaField('', [InputRequired("É necessária a trajetória")], render_kw=dict(placeholder=""))
 
-    producao = TextAreaField('Produção', [InputRequired("É necessária a produção")], render_kw=dict(placeholder="Digite a produção aqui"))
+    producao = TextAreaField('', [InputRequired("É necessária a produção")], render_kw=dict(placeholder=""))
 
-    imagens = FieldList(FormField(ImagensArtista, label=''), label = "", widget=TableWidget(), min_entries=1, max_entries=12)
+    imagens = FieldList(FormField(ImagensArtista, label=''), label = "", widget=TableWidget(), min_entries=0, max_entries=12)
 
-    links = FieldList(FormField(UrlsArtista, label=''), label = "", widget=TableWidget(), min_entries=1, max_entries=8)
+    links = FieldList(FormField(UrlsArtista, label=''), label = "", widget=TableWidget(), min_entries=0, max_entries=8)
 
-    pesquisante = StringField('Pesquisante', render_kw=dict(placeholder="Pesquisante"))
+    pesquisante = StringField('', render_kw=dict(placeholder=""))
 
-    email_pesquisante = EmailField('E-mail pesquisante', render_kw=dict(placeholder="E-mail"))
+    email_pesquisante = EmailField('', render_kw=dict(placeholder=""))
 
-    data_nascimento = StringField("Data de nascimento", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+    data_nascimento = StringField("", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
 
-    palavras_chave = FieldList(FormField(PalavrasChave, label = ''), label = "", widget=TableWidget(), min_entries=1, max_entries=12)
+    palavras_chave = FieldList(FormField(PalavrasChave, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=12)
 
-    genero = StringField("Gênero", render_kw=dict(placeholder="Gênero"))
+    genero = StringField("", render_kw=dict(placeholder=""))
 
-    pagina = URLField('URL', render_kw=dict(placeholder="http://", \
+    pagina = URLField('', render_kw=dict(placeholder="http://", \
                             oninvalid="setCustomValidity('Insira uma URL válida')", \
                             oninput="setCustomValidity('')"))
 

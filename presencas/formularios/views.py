@@ -28,7 +28,7 @@ def index_formulario_criacao_artista():
 
             respostas, ocorreu_erro = cria_artista_recursos_ckan(form, request.files)
 
-            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro)
+            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = True)
 
     return render_template('formularios/formulario.html', form = form)
 
@@ -54,6 +54,6 @@ def index_formulario_adicao_obras_artista():
 
             respostas, ocorreu_erro = cria_recursos_ckan(form, request.files, nome)
 
-            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro)
+            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = False)
 
     return render_template('formularios/formulario_recursos.html', form = form)

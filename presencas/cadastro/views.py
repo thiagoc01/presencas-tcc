@@ -30,14 +30,14 @@ def login():
 
     return render_template("login/login.html", form = form)
 
-@cadastro_blueprint.route("/logout")
+@cadastro_blueprint.route("/logout/")
 @login_required
 def logout():
     if current_user.is_authenticated:
         logout_user()
     return redirect(url_for("cadastro.login"))
 
-@cadastro_blueprint.route("/criar_usuario", methods=['GET', 'POST'])
+@cadastro_blueprint.route("/criar_usuario/", methods=['GET', 'POST'])
 @login_required
 def criar_usuario():
     form = FormularioCadastro(request.form)
@@ -56,7 +56,7 @@ def criar_usuario():
 
     return render_template('cadastro/cadastro_usuario.html', form = form, cadastrar_usuario = True)
 
-@cadastro_blueprint.route("/remover_usuario", methods=['GET', 'POST'])
+@cadastro_blueprint.route("/remover_usuario/", methods=['GET', 'POST'])
 @login_required
 def remover_usuario():
     form = FormularioRemocao(request.form)

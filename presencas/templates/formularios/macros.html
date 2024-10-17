@@ -1,35 +1,56 @@
-{% macro renderiza_tabelas_campos(campo_form) -%}
-    <table id="{{ campo_form.name }}">
+{% macro renderiza_tabelas_campos(campo_form, spans = dict()) -%}
+    <table id="{{ campo_form.name }}" class="w-100">
+    <tbody>
         {% for i in range(0, campo_form|length) %}
             <tr>
                 <th><label for="{{ campo_form.name }}-{{i}}"></label></th>
                 <td>
-                    <fieldset name="{{ campo_form[i].name }}">
+                    <fieldset name="{{ campo_form[i].name }}" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
                         {% for campo in campo_form[i] %}
-                            {{ renderiza_campo(campo) }}
                             {% set indice_nome_var = campo.name.split('-')|length %}
                             {% set nome_var = campo.name.split('-')[indice_nome_var - 1] %}
+                            {{ renderiza_campo_lista_campos(campo, "", "mt-4", spans.get(nome_var)) }}
                             {{ renderiza_erro_lista_campos(campo_form.name, i, nome_var ) }}
                         {% endfor %}       
                     </fieldset>
                 </td>
             </tr>
         {% endfor %}
+    </tbody>
     </table>
 {%- endmacro %}
 
-{% macro renderiza_campo(campo) -%}
-    <div>
-        {{ campo.label }}
-        {{ campo }}
-    </div>
+{% macro renderiza_campo(campo, classe_label = "", classe_campo = "", span = "") -%}
+    {{ campo.label(class_ = classe_label) }}
+    {{ campo(class_ = classe_campo) }}
+    {{ span|safe }}
 {%- endmacro %}
 
-{% macro renderiza_erro_campo(campo) -%}
+{% macro renderiza_erro_campo(campo, adicional = "") -%}
     {% if form.erros.get(campo) %}
-        <div id="{{ campo }}-erro" class="p-3 m-3 d-flex gap-2 justify-content-center align-items-center text-center">
+        <div id="{{ campo }}-erro" class="p-3 m-3 d-flex gap-2 text-center {{adicional}}">
             <i class="fa fa-close fs-2"></i>{{ form.erros.get(campo) }}
         </div>
+    {% endif %}
+{%- endmacro %}
+
+{% macro renderiza_campo_lista_campos(campo, classe_label = "", classe_campo = "", span = "") -%}
+    {% if campo.name.endswith('arquivo') %}
+    <div class="mb-3 align-self-start w-100 p-2">
+        {{ span|safe if span != None }}
+        {{ campo.label(class_ = 'enviar-arquivo fs-6 pb-1 d-block mt-3') }}
+        {{ campo(class_ = 'd-block fs-6 pb-1') }}
+    </div>
+    {% elif campo.name.find('remover_campo') != -1 %}
+    <div class="mb-3 align-self-start p-2">
+        {{ campo(class_ = 'botao botao-remover p-2')|safe }}
+    </div>
+    {% else %}
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        {{ campo.label(class_ = classe_label) }}
+        {{ campo(class_ = classe_campo) }}
+        {{ span|safe if span != None }}
+    </div>
     {% endif %}
 {%- endmacro %}
 

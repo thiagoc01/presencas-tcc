@@ -9,6 +9,6 @@ class FormularioRecursos(FlaskForm):
     class Meta:
         csrf = True
 
-    nome = StringField('Nome', [InputRequired("Insira o nome")], render_kw=dict(placeholder="Nome"))
+    nome = StringField('', [InputRequired("Insira o nome")], render_kw=dict(placeholder=""))
 
     imagens = FieldList(FormField(ImagensArtista, label=''), label = "", widget=TableWidget(), min_entries=1, max_entries=12)

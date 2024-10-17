@@ -4,6 +4,7 @@ import re
 from presencas import app
 from datetime import date
 import jsbeautifier
+from flask import abort
 
 class Artista:
 
@@ -160,7 +161,6 @@ def imprime_vermelho(string): print("\033[91m{}\033[00m".format(string))
 def imprime_verde(string): print("\033[92m{}\033[00m".format(string))
 
 class Requisicoes:
-    
     def __init__(self, token : str):
         self.header = {"Authorization" : token}
         self.ckan_url = app.config['CKAN_URL']
@@ -174,6 +174,9 @@ class Requisicoes:
         params['name'] = unidecode.unidecode(params.get("name").lower().replace(" ", "_"))
 
         resposta = requests.post(url, headers = self.header, json = params)
+
+        if resposta.status_code != 200:
+            abort(resposta.status_code)
 
         if resposta.json()['success'] == True:
             imprime_verde(f"Dataset {params['name']} criado com sucesso. \n")
@@ -205,16 +208,16 @@ class Requisicoes:
 
 def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisicoes : Requisicoes):
 
-    extras = [
-        {"key" : "first_name", "value" : artista.nome},
-        {"key" : "last_name", "value" : artista.sobrenome},
-        {"key" : "gender" , "value" : artista.genero},
-        {"key" : "birthday" , "value" : artista.data_nascimento},
-        {"key" : "homepage" , "value" : artista.pagina},
-        {"key" : "modified" , "value" : artista.atualizacao}
-    ]
+    extras = []
 
-    if artista.links[0] != None:
+    extras.append({"key" : "first_name", "value" : artista.nome}) if artista.nome else ""
+    extras.append({"key" : "last_name", "value" : artista.sobrenome}) if artista.sobrenome else ""
+    extras.append({"key" : "gender" , "value" : artista.genero}) if artista.genero else ""
+    extras.append({"key" : "birthday" , "value" : artista.data_nascimento}) if artista.data_nascimento else ""
+    extras.append({"key" : "homepage" , "value" : artista.pagina}) if artista.pagina else ""
+    extras.append({"key" : "modified" , "value" : artista.atualizacao}) if artista.atualizacao else ""
+
+    if artista.links and artista.links[0] != None:
         extras.append({"key" : "links" , "value" : ",".join([link for link in artista.links])})
 
     params = {
@@ -232,7 +235,7 @@ def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisic
     if artista.email_pesquisante != "":
         params['maintainer_email'] = artista.email_pesquisante
 
-    if artista.palavras_chave[0] != None:
+    if artista.palavras_chave and artista.palavras_chave[0] != None:
         params["tags"] = [{"name" : nome} for nome in artista.palavras_chave]
 
     return requisicoes.cria_dataset(params)
@@ -287,14 +290,13 @@ def cria_artista_recursos_ckan(form, arquivos):
     artista = Artista(form, arquivos)
 
     resposta, erro = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+
     respostas.append(jsbeautifier.beautify(str(resposta)))
 
     if erro:
         return respostas, True
 
     id_dataset = resposta['result']['id']
-
-    print(artista.imagens)
 
     for imagem in artista.imagens:
 

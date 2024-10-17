@@ -8,21 +8,33 @@ Projeto Presenças
 
 {% block css %}
 <link rel="stylesheet" href="{{ url_for('static', filename='styles/github-dark.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/logs.css') }}">
 {% endblock %}
 
 {% block content %}
 
-<main>
+<main class="d-flex flex-column align-contents-center jusitfy-content-center mx-auto p-3">
 
-    {% if ocorreu_erro %}
-        <h1>Erro ao criar artista no repositório CKAN</h1>
+    <img class=" m-3 logo text-center align-self-center" src="{{ url_for('static', filename='logo.png') }}" alt="Logo do Projeto Presenças">
+
+    {% if esta_criando_artista %}
+        {% if ocorreu_erro %}
+            <h1 class="text-center">Erro ao criar artista no repositório CKAN</h1>
+        {% else %}
+            <h1 class="text-center">Artista criado com sucesso</h1>
+        {% endif %}
     {% else %}
-        <h1>Artista criado com sucesso</h1>
+        {% if ocorreu_erro %}
+            <h1 class="text-center">Erro ao adicionar obra(s) no repositório CKAN</h1>
+        {% else %}
+            <h1 class="text-center">Obra(s) adicionadas com sucesso</h1>
+        {% endif %}    
     {% endif %}
 
+    <button id="mostrar-resultado" class="botao botao-mostrar mx-auto p-2 m-3" type="button" onclick="mostrar()"><i class="fa-solid fa-eye-slash me-2"></i>Exibir resposta do servidor</button>
 
-    <pre class="language-js" style="white-space: pre-wrap;">
-        <code>{% for resposta in respostas %}{{ resposta }}
+    <pre id="resultado" class="language-js codigo mx-auto" style="white-space: pre-wrap;">
+        <code class="hljs language-javascript mx-auto">{% for resposta in respostas %}{{ resposta }}
 
 
 {% endfor %}</code>
@@ -34,4 +46,10 @@ Projeto Presenças
 {% block js %}
 <script src="{{ url_for('static', filename='highlight.min.js') }}"></script>
 <script>hljs.highlightAll();</script>
+<script src="{{ url_for('static', filename='jquery-3.7.1.min.js')}}"></script>
+<script type="text/javascript">
+    $('#mostrar-resultado').on('click', () => {
+        $('#resultado').toggle();
+    });
+</script>
 {% endblock %}
