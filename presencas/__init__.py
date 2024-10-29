@@ -42,3 +42,35 @@ def index():
 @login_required
 def menu():
     return render_template('menu.html')
+
+@app.errorhandler(400)
+def bad_request(e):
+    return render_template('erros/400.html'), 400
+
+@app.errorhandler(401)
+def unauthorize(e):
+    return render_template('erros/401.html'), 401
+
+@app.errorhandler(403)
+def forbidden(e):
+    return render_template('erros/403.html'), 403
+
+@app.errorhandler(404)
+def not_found(e):
+    return render_template('erros/404.html'), 404
+
+@app.errorhandler(405)
+def method_not_allowed(e):
+    return render_template('erros/405.html'), 405
+
+@app.errorhandler(500)
+def internal_server_error(e):
+    return render_template('erros/500.html'), 500
+
+@app.errorhandler(502)
+def bad_gateway(e):
+    return render_template('erros/502.html'), 502
+
+@app.errorhandler(504)
+def gateway_timeout(e):
+    return render_template('erros/504.html'), 504

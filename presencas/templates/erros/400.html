@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}
+
+Projeto Presenças - Bad Request
+
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/logs.css') }}">
+{% endblock %}
+
+{% block content %}
+
+<main class="d-flex flex-column align-contents-center jusitfy-content-center mx-auto p-3">
+
+    <img class=" m-3 logo text-center align-self-center" src="{{ url_for('static', filename='logo.png') }}" alt="Logo do Projeto Presenças">
+
+    <h1 class="text-center">400 Bad Request</h1>
+</main>
+
+{% endblock %}
