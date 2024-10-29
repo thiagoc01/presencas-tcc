@@ -198,9 +198,6 @@ class Requisicoes:
 
         resposta = requests.post(url, headers = self.header, json = params)
 
-        if resposta.status_code != 200:
-            abort(resposta.status_code)
-
         if resposta.json()['success'] == True:
             imprime_verde(f"Dataset {params['name']} criado com sucesso. \n")
         else:
@@ -208,7 +205,7 @@ class Requisicoes:
             imprime_vermelho(resposta.json())
             ocorreu_erro = True
 
-        return resposta.json(), ocorreu_erro
+        return resposta.json(), ocorreu_erro, resposta.status_code
     
     def cria_recurso(self, params : dict, arquivo):
 
@@ -227,7 +224,7 @@ class Requisicoes:
             imprime_vermelho(resposta.json())
             ocorreu_erro = True
 
-        return resposta.json(), ocorreu_erro
+        return resposta.json(), ocorreu_erro, resposta.status_code
 
 def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisicoes : Requisicoes):
 

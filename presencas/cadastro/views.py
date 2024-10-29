@@ -1,10 +1,10 @@
-from flask import Blueprint, redirect, render_template, request, url_for
+from flask import Blueprint, redirect, render_template, request, url_for, abort
 from flask_login import login_user, logout_user, current_user, login_required
 from presencas import bcrypt_var, db
 from .usuario import Usuario
 from .login import FormularioLogin
 from .controle_usuario import FormularioCadastro, FormularioRemocao
-from sqlalchemy.exc import DBAPIError
+from sqlalchemy.exc import DBAPIError, OperationalError
 
 cadastro_blueprint = Blueprint("cadastro", __name__)
 
@@ -40,6 +40,10 @@ def logout():
 @cadastro_blueprint.route("/criar_usuario/", methods=['GET', 'POST'])
 @login_required
 def criar_usuario():
+
+    if not current_user.e_adm:
+        abort(403)
+
     form = FormularioCadastro(request.form)
     form.erros = dict()
 
@@ -49,8 +53,10 @@ def criar_usuario():
         try:
             db.session.add(usuario)
             db.session.commit()
-        except DBAPIError as e:
+        except (DBAPIError, OperationalError) as e:
             erro = e
+        except Exception:
+            abort(500)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
 
@@ -59,6 +65,10 @@ def criar_usuario():
 @cadastro_blueprint.route("/remover_usuario/", methods=['GET', 'POST'])
 @login_required
 def remover_usuario():
+
+    if not current_user.e_adm:
+        abort(403)
+
     form = FormularioRemocao(request.form)
     form.erros = dict()
 
@@ -68,8 +78,10 @@ def remover_usuario():
         try:
             db.session.delete(usuario)
             db.session.commit()
-        except DBAPIError as e:
+        except (DBAPIError, OperationalError) as e:
             erro = e
+        except Exception:
+            abort(500)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = False)
 

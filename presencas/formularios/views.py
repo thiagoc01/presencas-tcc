@@ -45,13 +45,13 @@ def index_formulario_criacao_artista():
 
         validador = ValidadorCriacaoArtista()
         if validador.realiza_validacao_form_artista(form, request.files) == 1:   # Essa validação permite colocar as mensagens de erro no formulário
-            return render_template('formularios/formulario.html', form = form)
+            return render_template('formularios/formulario.html', form = form), 400
 
         if form.validate_on_submit():
 
             respostas, ocorreu_erro, codigo = cria_artista_recursos_ckan(form, request.files, request.values.get('id_solicitacao'))
 
-            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = True)
+            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = True), codigo
 
     return render_template('formularios/formulario.html', form = form)
 
@@ -74,12 +74,12 @@ def index_formulario_adicao_obras_artista():
         nome, erro = validador.realiza_validacao_form_artista(form, request.files)
 
         if erro == 1:
-            return render_template('formularios/formulario_recursos.html', form = form)
+            return render_template('formularios/formulario_recursos.html', form = form), 400
         
         if form.validate_on_submit():
 
             respostas, ocorreu_erro, codigo = cria_recursos_ckan(form, request.files, nome, request.values.get('id_solicitacao'))
 
-            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = False)
+            return render_template('formularios/log_ckan.html', respostas = respostas, ocorreu_erro = ocorreu_erro, esta_criando_artista = False), codigo
 
     return render_template('formularios/formulario_recursos.html', form = form)
