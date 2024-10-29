@@ -1,10 +1,33 @@
 import unidecode
 import requests
 import re
-from presencas import app
+from flask import abort
+from presencas import app, db
 from datetime import date
 import jsbeautifier
-from flask import abort
+from .solicitacao import Solicitacao
+import time
+
+def adiciona_solicitacao(solicitacao):
+    try:
+        db.session.add(solicitacao)
+        db.session.commit()
+    except Exception:
+        abort(500)
+
+def atualiza_progresso(solicitacao, progresso, TOTAL):
+    try:
+        solicitacao.progresso = progresso / TOTAL
+        db.session.commit()
+    except Exception:
+        pass
+
+def deleta_solicitacao(solicitacao):
+    try:
+        db.session.delete(solicitacao)
+        db.session.commit()
+    except Exception:
+        pass
 
 class Artista:
 
@@ -282,45 +305,80 @@ def cria_recurso_dataset(id_dataset, artista : Artista, imagem : str, requisicoe
     return requisicoes.cria_recurso(params_recurso, arquivo)
 
 
-def cria_artista_recursos_ckan(form, arquivos):
+def cria_artista_recursos_ckan(form, arquivos, id_solicitacao):
 
     requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
     respostas = []
 
+    solicitacao = Solicitacao(id = id_solicitacao)
+    progresso = 1
+
     artista = Artista(form, arquivos)
 
-    resposta, erro = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+    TOTAL = 1 + len(artista.imagens)
+
+    adiciona_solicitacao(solicitacao)
+
+    resposta, erro, codigo_resposta = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+
+    atualiza_progresso(solicitacao, progresso, TOTAL)
+
+    progresso += 1
 
     respostas.append(jsbeautifier.beautify(str(resposta)))
 
     if erro:
-        return respostas, True
+        deleta_solicitacao(solicitacao)
+        return respostas, True, codigo_resposta
 
     id_dataset = resposta['result']['id']
 
     for imagem in artista.imagens:
 
-        resposta, erro = cria_recurso_dataset(id_dataset, artista, imagem, requisicoes, arquivos)
+        resposta, erro, codigo_resposta = cria_recurso_dataset(id_dataset, artista, imagem, requisicoes, arquivos)
         respostas.append(jsbeautifier.beautify(str(resposta)))
 
         if erro:
-            return respostas, True
+            deleta_solicitacao(solicitacao)
+            return respostas, True, codigo_resposta
         
-    return respostas, False
+        atualiza_progresso(solicitacao, progresso, TOTAL)
 
-def cria_recursos_ckan(form, arquivos, nome_artista):
+        progresso += 1
+
+    time.sleep(2)
+
+    deleta_solicitacao(solicitacao)
+
+    return respostas, False, 201
+
+def cria_recursos_ckan(form, arquivos, nome_artista, id_solicitacao):
 
     requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
     respostas = []
 
     artista = ArtistaImagens(form, arquivos)
 
+    solicitacao = Solicitacao(id = id_solicitacao)
+    progresso = 1
+
+    TOTAL = len(artista.imagens)
+
+    adiciona_solicitacao(solicitacao)
+
     for imagem in artista.imagens:
 
-        resposta, erro = cria_recurso_dataset(nome_artista, artista, imagem, requisicoes, arquivos)
+        resposta, erro, codigo_resposta = cria_recurso_dataset(nome_artista, artista, imagem, requisicoes, arquivos)
         respostas.append(jsbeautifier.beautify(str(resposta)))
 
         if erro:
-            return respostas, True
-        
-    return respostas, False
+            deleta_solicitacao(solicitacao)
+            return respostas, True, codigo_resposta
+
+        atualiza_progresso(solicitacao, progresso, TOTAL)
+
+        progresso += 1
+
+    deleta_solicitacao(solicitacao)
+
+    return respostas, False, 201

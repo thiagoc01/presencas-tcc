@@ -1,5 +1,7 @@
-const MAX_LINKS = 8;
-const MAX_IMAGENS = MAX_PALAVRAS_CHAVE = 12;
+MAX_LINKS = 8;
+MAX_IMAGENS = MAX_PALAVRAS_CHAVE = 12;
+id_intervalo = undefined;
+id_solicitacao = Math.floor(Math.random() * (1e20 - 1) + 1).toString();
 
 function remove_ultimo_campo(evento)
 {
@@ -72,7 +74,7 @@ $(':root').on("change", 'input[type="file"]', function (e) {
         if ($(`input[name="${e.target.name}"]`).val())
             $(`input[name="${e.target.name}"]`).prev().css('background-color', 'green').css('color', 'white')
         else
-        $(`input[name="${e.target.name}"]`).prev().css('background-color', '').css('color', "")
+            $(`input[name="${e.target.name}"]`).prev().css('background-color', '').css('color', "")
     }
 });
 
@@ -88,5 +90,62 @@ $(':root').on("change", 'input[type="file"]', function (e) {
     $(`#${campo} td input`).on("input", function (evento) {
         $(evento.target).parent($(`#${evento.target.id}`)).next('[id *= -erro-]').remove();
         $(evento.target).off("input");
+    });
+});
+
+function obtem_progresso(ID)
+{
+    $.ajax({
+        url: `/api/obter_progresso/${ID}`,
+        type: "GET",
+
+        dataType: 'text',
+
+        processData: false,
+
+        contentType: false,
+
+        success: data => {
+            porcentagem = (data * 100).toFixed(2);
+            $("#barra-carregamento").css('width', porcentagem + '%');
+            $("#barra-carregamento").text(Math.round(porcentagem) + '%');
+            $("#barra-carregamento").attr('aria-valuenow', porcentagem);
+        }
+    });
+}
+
+$("form").submit(function(e){
+    e.preventDefault();
+
+    $.ajax({
+        type: "POST",
+
+        contentType: false,
+
+        data: new FormData(this),
+
+        dataType: 'html',
+
+        processData: false,
+
+        beforeSend: function() {
+            $("body").prepend($.parseHTML(HTML_BARRA_PROGRESSO));
+            $("body").css('scrollbar-width', '100vh');
+            id_intervalo = setInterval(obtem_progresso, 500, id_solicitacao);
+            this.data.append('id_solicitacao', id_solicitacao);
+        },
+
+        success: data => {
+            clearInterval(id_intervalo);
+            document.open();
+            document.write(data);
+            document.close();
+        },
+
+        error: data => {
+            clearInterval(id_intervalo);
+            document.write(data.responseText);
+            document.close();
+        }
     });
 });

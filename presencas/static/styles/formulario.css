@@ -166,3 +166,16 @@ input[type="file"] {
     height: auto;
     font-size: 1.3rem;
 }
+
+.opaco {
+    background: rgba(255, 255, 255, 0.2) !important;
+    backdrop-filter: blur(8px);
+    z-index: 3;
+    position: fixed;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+#barra-carregamento {
+    background-color: rgba(3, 147, 17, 0.9);
+}

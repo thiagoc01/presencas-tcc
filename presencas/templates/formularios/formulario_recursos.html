@@ -47,7 +47,7 @@ Projeto Presenças - Formulário de cadastro de obras para um artista
 
 {% block js %}
 <script type="text/javascript">
-    const A = `<table id="imagens" class="w-100">
+    A = `<table id="imagens" class="w-100">
     <tbody>
         
             <tr>
@@ -160,8 +160,13 @@ Projeto Presenças - Formulário de cadastro de obras para um artista
         
     </tbody>
     </table>`
-    const B = A
-    const C = A
+    B = A
+    C = A
+    HTML_BARRA_PROGRESSO = `<div class="opaco">
+                    <div class="progress m-auto w-50 position-absolute top-50" style="left: 25%;">
+                        <div id="barra-carregamento" class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>`;
 </script>
 <script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
 <script src="{{ url_for('static', filename='formulario_js.min.js') }}"></script>
