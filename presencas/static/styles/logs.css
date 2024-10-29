@@ -14,8 +14,8 @@ main {
 }
 
 .logo {
-    width: 400px;
-    height: 400px;
+    width: 360px;
+    height: 360px;
 }
 
 .botao-mostrar {
@@ -33,14 +33,14 @@ pre {
 }
 
 @media (max-width: 1000px) {
-    .login-logo {
+    .logo {
         width: 200px;
         height: 200px;
     }
 }
 
 @media (max-width: 768px) {
-    .login-logo {
+    .logo {
         width: 120px;
         height: 120px;
     }

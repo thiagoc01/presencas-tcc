@@ -107,6 +107,11 @@ input, textarea, input[type = "file"]:invalid {
     box-shadow: 0 8px 6px -4px rgba(219, 4, 4, 0.6);
 }
 
+input[type="submit"] {
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
 fieldset .interno {
     border: 3px rgba(2, 151, 17, 0.6) solid;
     border-radius: 10px;

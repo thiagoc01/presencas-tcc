@@ -101,7 +101,7 @@ class ValidadorCriacaoObras(ValidadorCriacaoArtista):
 
         nome = None
 
-        self.retorna_mensagem_erro_form(form, "nome", form.nome, "- É necessário inserir um nome")
+        self.retorna_mensagem_erro_form(form, "nome", form.nome, "É necessário inserir um nome")
 
         if form.erros.get('nome') == None:
 
@@ -115,19 +115,19 @@ class ValidadorCriacaoObras(ValidadorCriacaoArtista):
             nome = unidecode.unidecode(nome)
 
             if not self.verificador.verifica_artista(nome):
-                form.erros['nome'] = "- É necessário inserir um nome de um artista cadastrado"
+                form.erros['nome'] = "É necessário inserir um nome de um artista cadastrado"
 
         form.erros['imagens'] = [dict() for _ in range(0, form.imagens.__len__())]
 
         i = 0
 
         if len(arquivos.to_dict().items()) == 0:
-            form.erros['imagens'][i]['arquivo'] = "- É necessário inserir um arquivo .jpg, .jpeg, .jfif ou .png"
+            form.erros['imagens'][i]['arquivo'] = "É necessário inserir um arquivo .jpg, .jpeg, .jfif ou .png"
             return nome, 1
 
         for _, arquivo in arquivos.to_dict().items():
             if arquivo.filename == '':
-                form.erros['imagens'][i]['arquivo'] = "- É necessário inserir um arquivo .jpg, .jpeg, .jfif ou .png"
+                form.erros['imagens'][i]['arquivo'] = "É necessário inserir um arquivo .jpg, .jpeg, .jfif ou .png"
             i += 1
 
         # Retorna 1 se houve erro

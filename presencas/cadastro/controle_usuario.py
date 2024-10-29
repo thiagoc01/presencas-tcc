@@ -11,27 +11,27 @@ class FormularioCadastro(FlaskForm):
     class Meta:
         csrf = True
 
-    usuario = StringField('Usuário', [InputRequired("Insira o usuário para cadastro")], render_kw=dict(placeholder="Usuario"))
-    senha = PasswordField('Senha', [InputRequired("Insira a senha para cadastro")], render_kw=dict(placeholder="Senha"))
-    e_adm = BooleanField('Tornar administrador?', default=False)
-    confirmar_senha = PasswordField('Confirmar senha', [InputRequired("Insira a senha para confirmar")], render_kw=dict(placeholder="Confirme a senha"))
+    usuario = StringField('', [InputRequired("Insira o usuário para cadastro")], render_kw=dict(placeholder=""))
+    senha = PasswordField('', [InputRequired("Insira a senha para cadastro")], render_kw=dict(placeholder=""))
+    e_adm = BooleanField('', default=False)
+    confirmar_senha = PasswordField('', [InputRequired("Insira a senha para confirmar")], render_kw=dict(placeholder="Digite a senha novamente"))
 
     def validate(self, extra_validators):
         validacao_form = super(FormularioCadastro, self).validate()
         if not validacao_form:
             if self.usuario.data == "":
-                self.erros["usuario"] = "- Digite um nome de usuário"
+                self.erros["usuario"] = "Digite um nome de usuário"
             if self.senha.data == "":
-                self.erros["senha"] = "- Digite uma senha"
+                self.erros["senha"] = "Digite uma senha"
             if self.confirmar_senha.data == "":
-                self.erros["confirmar_senha"] = "- Digite a confirmação da senha"
+                self.erros["confirmar_senha"] = "Digite a confirmação da senha"
             return False
         usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
         if usuario:
-            self.erros["usuario"] = "- Usuário já existente"
+            self.erros["usuario"] = "Usuário já existente"
 
         if self.senha.data != self.confirmar_senha.data:
-            self.erros["confirmar_senha"] = "- As senhas não coincidem"
+            self.erros["confirmar_senha"] = "As senhas não coincidem"
 
         regex_simbolos = re.compile("[@_!#$%^&*()<>?/\|}{~:]")
         regex_minuscula = re.compile("[a-z]")
@@ -40,7 +40,7 @@ class FormularioCadastro(FlaskForm):
         if re.search(regex_simbolos, self.senha.data) == None or re.search(regex_minuscula, self.senha.data) == None \
                 or re.search(regex_maiuscula, self.senha.data) == None or re.search(regex_numero, self.senha.data) == None \
                 or len(self.senha.data) < 10:
-            self.erros["senha"] = "- A senha deve ter pelo menos um caractere especial, uma letra maiúscula e minúscula, um número e 10 caracteres ao menos"
+            self.erros["senha"] = "A senha deve ter pelo menos um caractere especial, uma letra maiúscula e minúscula, um número e 10 caracteres ao menos"
 
         if len(self.erros.items()) > 0:
             return False
@@ -51,19 +51,19 @@ class FormularioRemocao(FlaskForm):
     class Meta:
         csrf = True
 
-    usuario = StringField('Usuário', [InputRequired("Insira o usuário para cadastro")], render_kw=dict(placeholder="Usuario"))
+    usuario = StringField('', [InputRequired("Insira o usuário para cadastro")], render_kw=dict(placeholder=""))
 
     def validate(self, extra_validators):
         validacao_form = super(FormularioRemocao, self).validate()
         if not validacao_form:
             if self.usuario.data == "":
-                self.erros["usuario"] = "- Digite um nome de usuário"
+                self.erros["usuario"] = "Digite um nome de usuário"
             return False
         if self.usuario.data == current_user.usuario:
-            self.erros["usuario"] = "- O usuário a ser deletado não pode ser igual ao atual"
+            self.erros["usuario"] = "O usuário a ser deletado não pode ser igual ao atual"
             return False
         usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
         if usuario == None:
-            self.erros["usuario"] = "- Usuário não cadastrado"
+            self.erros["usuario"] = "Usuário não cadastrado"
             return False
         return True
