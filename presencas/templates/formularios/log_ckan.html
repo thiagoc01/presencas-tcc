@@ -27,14 +27,14 @@ Projeto Presenças
         {% if ocorreu_erro %}
             <h1 class="text-center">Erro ao adicionar obra(s) no repositório CKAN</h1>
         {% else %}
-            <h1 class="text-center">Obra(s) adicionadas com sucesso</h1>
+            <h1 class="text-center">Obra(s) adicionada(s) com sucesso</h1>
         {% endif %}    
     {% endif %}
 
-    <button id="mostrar-resultado" class="botao botao-mostrar mx-auto p-2 m-3" type="button" onclick="mostrar()"><i class="fa-solid fa-eye-slash me-2"></i>Exibir resposta do servidor</button>
+    <button id="mostrar-resultado" class="botao botao-mostrar mx-auto p-2 m-3" type="button"><i class="fa-solid fa-eye-slash me-2"></i>Exibir resposta do servidor</button>
 
-    <pre id="resultado" class="language-js codigo mx-auto" style="white-space: pre-wrap;">
-        <code class="hljs language-javascript mx-auto">{% for resposta in respostas %}{{ resposta }}
+    <pre id="resultado" class="language-js codigo mx-auto">
+        <code class="mx-auto">{% for resposta in respostas %}{{ resposta }}
 
 
 {% endfor %}</code>
