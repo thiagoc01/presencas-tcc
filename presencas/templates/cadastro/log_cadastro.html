@@ -6,19 +6,38 @@ Projeto Presenças
 
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/github-dark.min.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/logs.css') }}">
+{% endblock %}
+
 {% block content %}
 
-<main>
-
+<main class="d-flex flex-column align-contents-center jusitfy-content-center mx-auto p-3">
+    <img class=" m-3 logo text-center align-self-center" src="{{ url_for('static', filename='logo.png') }}" alt="Logo do Projeto Presenças">
     {% if erro != None %}
-        <h1>Erro ao {{ "criar" if cadastrar_usuario else "remover" }} usuário {{ usuario }}</h1>
-        <pre class="language-python" style="white-space: pre-wrap;">
-            <code>{{ erro }}</code>
+        <h1 class="text-center">Erro ao {{ "criar" if cadastrar_usuario else "remover" }} usuário {{ usuario }}</h1>
+        <button id="mostrar-resultado" class="botao botao-mostrar mx-auto p-2 m-3" type="button" onclick="mostrar()"><i class="fa-solid fa-eye-slash me-2"></i>Exibir erro</button>
+        <pre id="resultado" class="language-python codigo mx-auto">
+            <code class="mx-auto">{{ erro }}</code>
         </pre>
     {% else %}
-        <h1>Usuário {{ usuario }} {{ "criado" if cadastrar_usuario else "removido" }} com sucesso</h1>
+        <h1 class="text-center">Usuário {{ usuario }} {{ "criado" if cadastrar_usuario else "removido" }} com sucesso</h1>
     {% endif %}
     
 </main>
 
 {% endblock %}
+
+{% if erro != None %}
+{% block js %}
+<script src="{{ url_for('static', filename='highlight.min.js') }}"></script>
+<script>hljs.highlightAll();</script>
+<script src="{{ url_for('static', filename='jquery-3.7.1.min.js')}}"></script>
+<script type="text/javascript">
+    $('#mostrar-resultado').on('click', () => {
+        $('#resultado').toggle();
+    });
+</script>
+{% endblock %}
+{% endif %}

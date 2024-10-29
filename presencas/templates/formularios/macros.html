@@ -63,3 +63,9 @@
         {% endif %}
     {% endif %}
 {%- endmacro %}
+
+{% macro renderiza_checkbox(campo, classe_label, classe_campo, span) %}
+    {{ campo.label(class_ = classe_label) }}
+    {{ span|safe }}
+    {{ campo(class_ = classe_campo) }}
+{% endmacro %}

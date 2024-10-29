@@ -1,48 +1,81 @@
 {% extends "base.html" %}
-{% from "formularios/macros.html" import renderiza_campo, renderiza_erro_campo with context %}
+{% from "formularios/macros.html" import renderiza_campo, renderiza_erro_campo, renderiza_checkbox with context %}
 {% block title %}
 
 Projeto Presenças - Cadastrar ou remover usuário
 
 {% endblock %}
 
+{% block css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/formulario.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='styles/cadastro_remocao.css') }}">
+{% endblock %}
+
 {% block content %}
 
 {% if cadastrar_usuario %}
 
-    <main>
+    <main class="p-4 mx-auto my-auto">
 
-        <form method="POST">
+        <form class="d-flex flex-column" method="POST">
             {{ form.csrf_token }}
-            <div>
-                {{ renderiza_campo(form.usuario) }}
+            <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+                {{ renderiza_campo(form.usuario, "mb-2", "", '<span><i class="fa-solid fa-person pe-2"></i>Usuário</span>') }}
                 {{ renderiza_erro_campo(form.usuario.name) }}
-                {{ renderiza_campo(form.senha) }}
-                {{ renderiza_erro_campo(form.senha.name) }}
-                {{ renderiza_campo(form.confirmar_senha )}}
-                {{ renderiza_erro_campo(form.confirmar_senha.name) }}
-                {{ renderiza_campo(form.e_adm) }}
-                <button type="submit" class="btn btn-primary">
-                    Cadastrar usuário
-                </button>              
             </div>
+
+            <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+                {{ renderiza_campo(form.senha, "mb-2", "", '<span><i class="fa-solid fa-key pe-2"></i>Senha</span>') }}
+                {{ renderiza_erro_campo(form.senha.name) }}
+            </div>
+
+            <div id="verificador-minimalidade-senha" class="verificador-minimalidade-senha mb-4">
+                <div class="verificador-10-caracteres">
+                    <i class="fa-solid fa-xmark pe-1"></i> A senha contém 10 caracteres ao menos
+                </div>
+                <div class="verificador-letras">
+                    <i class="fa-solid fa-xmark pe-1"></i> A senha contém uma letra maiúscula e minúscula ao menos
+                </div>
+                <div class="verificador-numero">
+                    <i class="fa-solid fa-xmark pe-1"></i> A senha contém um número ao menos
+                </div>
+                <div class="verificador-caractere-especial">
+                    <i class="fa-solid fa-xmark pe-1"></i> A senha contém um caractere especial ao menos
+                </div>
+            </div>
+
+            <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+                {{ renderiza_campo(form.confirmar_senha, "mb-2 mt-2", "", '<span><i class="fa-solid fa-key pe-2"></i>Confirmar a senha</span>') }}
+                {{ renderiza_erro_campo(form.confirmar_senha.name) }}
+            </div>
+
+            <div class="mb-5 mt-3 w-100">
+                {{ renderiza_checkbox(form.e_adm, "mb-2", "ms-2 w-auto", '<span><i class="fa-solid fa-crown pe-2"></i>Tornar administrador?</span>') }}
+            </div>
+
+            <button id="botao-cadastrar" type="submit" disabled class="botao botao-criar p-3 d-block w-100">
+                Cadastrar usuário
+            </button>
         </form>
 
     </main>
 
+<script src="{{ url_for('static', filename='jquery-3.7.1.min.js') }}"></script>
+<script src="{{ url_for('static', filename='controlador_senha.min.js') }}"></script>
+
 {% else %}
 
-    <main>
+    <main class="p-4 mx-auto my-auto">
 
-        <form method="POST">
+        <form class="d-flex flex-column" method="POST">
             {{ form.csrf_token }}
-            <div>
-                {{ renderiza_campo(form.usuario) }}
+            <div class="d-flex flex-column mb-5 mt-3 w-100 animacao-entrada">
+                {{ renderiza_campo(form.usuario, "mb-2", "", '<span><i class="fa-solid fa-person pe-2"></i>Usuário</span>') }}
                 {{ renderiza_erro_campo(form.usuario.name) }}
-                <button type="submit" class="btn btn-primary">
-                    Remover usuário
-                </button>
             </div>
+            <button type="submit" class="botao botao-criar p-3 d-block w-100">
+                Remover usuário
+            </button>
         </form>
 
     </main>

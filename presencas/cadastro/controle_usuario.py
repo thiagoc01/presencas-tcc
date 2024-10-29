@@ -33,7 +33,7 @@ class FormularioCadastro(FlaskForm):
         if self.senha.data != self.confirmar_senha.data:
             self.erros["confirmar_senha"] = "As senhas não coincidem"
 
-        regex_simbolos = re.compile("[@_!#$%^&*()<>?/\|}{~:]")
+        regex_simbolos = re.compile("[@_!#$%^&*()<>?/\|}{~:\.]")
         regex_minuscula = re.compile("[a-z]")
         regex_maiuscula = re.compile("[A-Z]")
         regex_numero = re.compile("[0-9]")
