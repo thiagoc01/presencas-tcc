@@ -43,5 +43,15 @@ function verifica_condicoes(e)
     verifica_minimalidade_senha();
 }
 
+function apaga_erro(e)
+{
+        $('#' + e.data.campo + '-erro').remove();
+        $(e.target).off("input", apaga_erro);
+}
+
 $('#senha').on('input', verifica_condicoes);
 $('#confirmar_senha').on('input', verifica_minimalidade_senha);
+
+['senha', 'confimar_senha'].forEach(campo => {
+    $(`#${campo}`).on("input", {campo: campo}, apaga_erro);
+});

@@ -82,4 +82,13 @@ Projeto Presenças - Cadastrar ou remover usuário
 
 {% endif %}
 
+<script type="text/javascript">
+
+    $('#usuario').on("input", function (evento) {
+        $('#usuario-erro').remove();
+        $(evento.target).off("input");
+    });
+
+</script>
+
 {% endblock %}
