@@ -29,7 +29,15 @@
 {% macro renderiza_erro_campo(campo, adicional = "") -%}
     {% if form.erros.get(campo) %}
         <div id="{{ campo }}-erro" class="p-3 m-3 d-flex gap-2 text-center {{adicional}}">
-            <i class="fa fa-close fs-2"></i>{{ form.erros.get(campo) }}
+            {% if form.erros.get(campo) is iterable and form.erros.get(campo) is not string %}
+                {% for erro in form.erros.get(campo) %}
+                    <div>
+                        <i class="fa fa-close fs-2 pe-2"></i>{{ erro }}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <i class="fa fa-close fs-2 pe-2"></i>{{ form.erros.get(campo) }}
+            {% endif %}
         </div>
     {% endif %}
 {%- endmacro %}

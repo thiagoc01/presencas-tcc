@@ -13,6 +13,7 @@ Projeto Presenças - Menu principal
 <main class="d-flex flex-column my-5 mx-auto gap-4 justify-content-center">
     <a class="botao-menu p-3 mx-auto my-2" href="{{ url_for('formulario.index_formulario_criacao_artista') }}">Cadastrar artista</a>
     <a class="botao-menu p-3 mx-auto my-2" href="{{ url_for('formulario.index_formulario_adicao_obras_artista') }}">Cadastrar obras de um artista existente</a>
+    <a class="botao-menu p-3 mx-auto my-2" href="{{ url_for('cadastro.alterar_senha') }}">Alterar senha</a>
     {% if current_user.e_adm %}
         <a class="botao-menu p-3 mx-auto my-2" href="{{ url_for('cadastro.criar_usuario') }}">Cadastrar novo usuário</a>
         <a class="botao-menu p-3 mx-auto my-2" href="{{ url_for('cadastro.remover_usuario') }}">Remover usuário</a>
