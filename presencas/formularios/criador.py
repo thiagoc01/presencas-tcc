@@ -184,9 +184,10 @@ def imprime_vermelho(string): print("\033[91m{}\033[00m".format(string))
 def imprime_verde(string): print("\033[92m{}\033[00m".format(string))
 
 class Requisicoes:
-    def __init__(self, token : str):
+    def __init__(self, token : str, solicitacao : Solicitacao):
         self.header = {"Authorization" : token}
         self.ckan_url = app.config['CKAN_URL']
+        self.solicitacao = solicitacao
     
     def cria_dataset(self, params : dict):
 
@@ -196,7 +197,13 @@ class Requisicoes:
 
         params['name'] = unidecode.unidecode(params.get("name").lower().replace(" ", "_"))
 
-        resposta = requests.post(url, headers = self.header, json = params)
+        try:
+
+            resposta = requests.post(url, headers = self.header, json = params)
+
+        except requests.exceptions.ConnectionError:
+            deleta_solicitacao(self.solicitacao)
+            abort(502)
 
         if resposta.json()['success'] == True:
             imprime_verde(f"Dataset {params['name']} criado com sucesso. \n")
@@ -215,7 +222,13 @@ class Requisicoes:
 
         # Cada recurso tem uma foto, enviada através de form-data de acordo com a documentação
 
-        resposta = requests.post(url, headers = self.header, data = params, files = arquivo)
+        try:
+
+            resposta = requests.post(url, headers = self.header, data = params, files = arquivo)
+
+        except requests.exceptions.ConnectionError:
+            deleta_solicitacao(self.solicitacao)
+            abort(502)
 
         if resposta.json()['success'] == True:
             imprime_verde(f"Recurso {params['name']} criado com sucesso. \n")
@@ -304,10 +317,11 @@ def cria_recurso_dataset(id_dataset, artista : Artista, imagem : str, requisicoe
 
 def cria_artista_recursos_ckan(form, arquivos, id_solicitacao):
 
-    requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
+    solicitacao = Solicitacao(id = id_solicitacao)
+
+    requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'], solicitacao)
     respostas = []
 
-    solicitacao = Solicitacao(id = id_solicitacao)
     progresso = 1
 
     artista = Artista(form, arquivos)
@@ -351,12 +365,13 @@ def cria_artista_recursos_ckan(form, arquivos, id_solicitacao):
 
 def cria_recursos_ckan(form, arquivos, nome_artista, id_solicitacao):
 
-    requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'])
+    solicitacao = Solicitacao(id = id_solicitacao)
+
+    requisicoes = Requisicoes(app.config['TOKEN_REQUISICOES'], solicitacao)
     respostas = []
 
     artista = ArtistaImagens(form, arquivos)
 
-    solicitacao = Solicitacao(id = id_solicitacao)
     progresso = 1
 
     TOTAL = len(artista.imagens)

@@ -1,6 +1,8 @@
 from .criador import Requisicoes
 import requests, unidecode
 from presencas import app
+from json import JSONDecodeError
+from flask import abort
 
 class ValidadorCriacaoArtista():
 
@@ -71,21 +73,25 @@ class ValidadorCriacaoArtista():
 
         return 0
 
-class VerificadorExistenciaArtista(Requisicoes):
+class VerificadorExistenciaArtista():
 
     def __init__(self, token):
-
-        super().__init__(token)
+        self.header = {"Authorization" : token}
+        self.ckan_url = app.config['CKAN_URL']
 
     def verifica_artista(self, nome : str):
 
         url = self.ckan_url + 'package_list'
 
-        artistas = requests.get(url, headers = self.header, data = {}).json()['result']
-
         try:
+
+            artistas = requests.get(url, headers = self.header, data = {}).json()['result']
+
             artistas.index(nome)
             return True
+
+        except (JSONDecodeError, requests.exceptions.ConnectionError):
+            abort(502)
 
         except ValueError:
             return False
