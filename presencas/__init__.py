@@ -65,7 +65,7 @@ def method_not_allowed(e):
 
 @app.errorhandler(500)
 def internal_server_error(e):
-    return render_template('erros/500.html'), 500
+    return render_template('erros/500.html', erro = e), 500
 
 @app.errorhandler(502)
 def bad_gateway(e):

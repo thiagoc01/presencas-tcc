@@ -17,6 +17,15 @@ Projeto Presenças - Internal Server Error
     <img class=" m-3 logo text-center align-self-center" src="{{ url_for('static', filename='logo.png') }}" alt="Logo do Projeto Presenças">
 
     <h1 class="text-center">500 Internal Server Error</h1>
+
+    <pre id="resultado" class="language-js codigo mx-auto">
+        <code class="mx-auto">{{ erro }}</code>
+    </pre>
 </main>
 
+{% endblock %}
+
+{% block js %}
+<script src="{{ url_for('static', filename='highlight.min.js') }}"></script>
+<script>hljs.highlightAll();</script>
 {% endblock %}
