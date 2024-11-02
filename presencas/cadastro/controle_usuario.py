@@ -49,7 +49,15 @@ class FormularioCadastro(FlaskForm):
                 self.erros["confirmar_senha"] = "Digite a confirmação da senha"
 
             return False
-        usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
+
+        try:
+
+            usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
+
+        except Exception:
+
+            raise
+
         if usuario:
 
             self.erros["usuario"] = "Usuário já existente"
@@ -90,7 +98,15 @@ class FormularioRemocao(FlaskForm):
             self.erros["usuario"] = "O usuário a ser deletado não pode ser igual ao atual"
 
             return False
-        usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
+
+        try:
+
+            usuario = db.session.execute(db.select(Usuario).filter_by(usuario = self.usuario.data)).first()
+
+        except Exception:
+
+            raise
+
         if usuario == None:
 
             self.erros["usuario"] = "Usuário não cadastrado"

@@ -19,13 +19,22 @@ def login():
 
     if form.validate_on_submit():
 
-        usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()
+        try:
+
+            usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()
+
+        except (DBAPIError, OperationalError):
+
+            abort(500)
         
         if usuario and bcrypt_var.check_password_hash(usuario[0].senha, form.senha.data):
+
             login_user(usuario[0], remember = form.lembrar_me.data)
+
             return redirect(url_for("menu"))
 
         else:
+
             form.erros['login'] = 'Nome de usuário ou senha incorretos'
 
     return render_template("login/login.html", form = form)
@@ -45,20 +54,29 @@ def logout():
 def criar_usuario():
 
     if not current_user.e_adm:
+
         abort(403)
 
     form = FormularioCadastro(request.form)
     form.erros = dict()
 
     if form.validate_on_submit():
+
         erro = None
-        usuario = Usuario(usuario = form.usuario.data, senha = form.senha.data, e_adm = form.e_adm.data)
+
         try:
+
+            usuario = Usuario(usuario = form.usuario.data, senha = form.senha.data, e_adm = form.e_adm.data)
+
             db.session.add(usuario)
             db.session.commit()
+
         except (DBAPIError, OperationalError) as e:
+
             erro = e
+
         except Exception:
+
             abort(500)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
