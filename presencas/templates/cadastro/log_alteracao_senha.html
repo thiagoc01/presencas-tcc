@@ -31,9 +31,9 @@ Projeto Presenças
 
 {% if erro != None %}
 {% block js %}
-<script src="{{ url_for('static', filename='highlight.min.js') }}"></script>
+<script src="{{ url_for('static', filename='js/highlight.min.js') }}"></script>
 <script>hljs.highlightAll();</script>
-<script src="{{ url_for('static', filename='jquery-3.7.1.min.js')}}"></script>
+<script src="{{ url_for('static', filename='js/jquery-3.7.1.min.js')}}"></script>
 <script type="text/javascript">
     $('#mostrar-resultado').on('click', () => {
         $('#resultado').toggle();
