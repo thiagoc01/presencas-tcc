@@ -23,9 +23,9 @@ def login():
 
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()
 
-        except (DBAPIError, OperationalError):
+        except (DBAPIError, OperationalError) as e:
 
-            abort(500)
+            abort(500, description = e)
         
         if usuario and bcrypt_var.check_password_hash(usuario[0].senha, form.senha.data):
 
@@ -75,9 +75,9 @@ def criar_usuario():
 
             erro = e
 
-        except Exception:
+        except Exception as e:
 
-            abort(500)
+            abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
 
@@ -108,9 +108,9 @@ def remover_usuario():
 
             erro = e
 
-        except Exception:
+        except Exception as e:
 
-            abort(500)
+            abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = False)
 
@@ -137,9 +137,9 @@ def alterar_senha():
  
             erro = e
 
-        except Exception:
+        except Exception as e:
 
-            abort(500)
+            abort(500, description = e)
 
         return render_template('cadastro/log_alteracao_senha.html', erro = erro)
 

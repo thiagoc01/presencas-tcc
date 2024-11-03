@@ -19,8 +19,8 @@ def retornar_progresso(id):
 
     try:
         progresso = db.session.execute(db.select(Solicitacao).filter_by(sessao = session.get('_id'), id = id)).first()
-    except Exception:
-        abort(500)
+    except Exception as e:
+        abort(500, description = e)
 
     if progresso:
         return make_response(str(progresso[0].progresso)), 200

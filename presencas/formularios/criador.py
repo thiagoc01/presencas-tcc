@@ -12,8 +12,8 @@ def adiciona_solicitacao(solicitacao):
     try:
         db.session.add(solicitacao)
         db.session.commit()
-    except Exception:
-        abort(500)
+    except Exception as e:
+        abort(500, description = e)
 
 def atualiza_progresso(solicitacao, progresso, TOTAL):
     try:
