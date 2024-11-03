@@ -113,6 +113,12 @@ class FormularioRemocao(FlaskForm):
 
             return False
 
+        if usuario[0].e_superadm:
+
+            self.erros["usuario"] = "Superadministradores não podem ser removidos através desta página"
+
+            return False
+
         return True
 
 class FormularioAlteracaoSenha(FlaskForm):

@@ -53,7 +53,7 @@ def logout():
 @login_required
 def criar_usuario():
 
-    if not current_user.e_adm:
+    if not current_user.e_adm and not current_user.e_superadm:
 
         abort(403)
 
@@ -87,7 +87,7 @@ def criar_usuario():
 @login_required
 def remover_usuario():
 
-    if not current_user.e_adm:
+    if not current_user.e_adm and not current_user.e_superadm:
 
         abort(403)
 
