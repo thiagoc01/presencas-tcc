@@ -13,26 +13,26 @@
 }
 
 .fundo {
-    background-color: rgba(234, 233, 233, 0.4);
-    box-shadow: 2px 2px 12px 2px rgba(0, 0, 0, 0.6);
+    background-color: var(--cor-fundo-cards);
+    box-shadow: var(--box-shadow-cards);
     border-radius: 5%;
 }
 
 [id *= "erro"] {
-    background-color: #e9434b;
-    color: white;
+    background-color: var(--vermelho-fundo-erros);
+    color: var(--branco);
     height: 2.5rem;
 }
 
 input:not([type = "checkbox"]) {
     border: transparent;
-    border-block-end: 1px solid rgb(219, 4, 4, 0.6);
+    border-block-end: 1px solid var(--vermelho-escuro);
     background: transparent;
-    color: rgb(47, 46, 46);
+    color: var(--cor-label-inputs-form);
     font-weight: 500;
     font-size: 1.5rem;
     outline: none;
-    box-shadow: 0 8px 6px -6px rgb(219, 4, 4, 0.6);
+    box-shadow: 0 8px 6px -6px var(--vermelho-escuro);
 }
 
 .animacao-entrada {
@@ -41,7 +41,7 @@ input:not([type = "checkbox"]) {
 
 .animacao-entrada span {
     position: absolute;
-    color: rgb(47, 46, 46);
+    color: var(--cor-label-inputs-form);
     top: 0;
     left: 3%;
     transition: all 0.5s;
@@ -53,22 +53,26 @@ input:not([type = "checkbox"]) {
 }
 
 .animacao-entrada input:focus, .animacao-entrada input:valid{
-    border-color: rgba(2, 151, 17, 0.6);
-    box-shadow: 0 8px 6px -6px rgba(2, 151, 17, 0.6);
+    border-color: var(--verde-principal);
+    box-shadow: 0 8px 6px -6px var(--verde-principal);
 }
 
 .animacao-entrada input:focus + span {
-  color: red;
+  color: var(--vermelho);
 }
 
 .bg-light {
-    background-color: #d5d5d5 !important;
+    background-color: var(--prata) !important;
 }
 
 .btn-primary, .btn-primary:active, .btn-primary:visited {
-    background-color: green !important;
+    background-color: var(--verde-botao-login) !important;
 }
 
 .btn-primary:hover {
-    background-color: rgb(57, 229, 57) !important;
+    background-color: var(--verde-botao-login-hover) !important;
+}
+
+main {
+    background-color: unset;
 }

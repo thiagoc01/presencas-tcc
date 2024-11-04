@@ -1,6 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
+:root {
+    --cor-botao-criacao-envio: rgba(20, 3, 251, 0.9);
+    --cor-botao-criacao-envio-hover: rgba(20, 3, 251, 0.6);
+    --prata: #d5d5d5;
+    --cinza: rgb(128, 128, 128);
+    --branco: #ffffff;
+    --vermelho: #ff0000;
+    --preto-semi-transparente: rgba(0, 0, 0, 0.6);
+    --cor-fundo-cards: rgba(234, 233, 233, 0.4);
+    --verde-claro-botao-barra-carregamento: rgba(3, 147, 17, 0.9);
+    --verde-claro-botao-barra-carregamento-hover: rgba(3, 147, 17, 0.3);
+    --verde-principal: rgba(2, 151, 17, 0.6);
+    --vermelho-escuro: rgba(219, 4, 4, 0.6);
+    --vermelho-botao-remover: rgba(234, 0, 0, 0.9);
+    --vermelho-botao-remover-hover: rgba(234, 0, 0, 0.3);
+    --vermelho-fundo-erros: #e9434b;
+    --vermelho-botao-menu: #ee0513;
+    --vermelho-botao-menu-hover: #ec505a;
+    --verde-botao-login: #007f00;
+    --verde-botao-login-hover: rgb(57, 229, 57);
+    --box-shadow-cards: 2px 2px 12px 2px var(--preto-semi-transparente);
+    --box-shadow-entradas: 0 8px 6px -4px var(--verde-principal);
+    --cor-label-inputs-form: rgb(47, 46, 46);
+    --tamanho-borda-campos-cards: 10px;
+    --intensidade-fonte-botoes-labels: 600;
+}
+
 body {
     font-family: 'Hind', sans-serif !important;
     background: linear-gradient(210deg, rgba(255,186,69,1) 0%, rgba(247,205,121,1) 50%, rgba(255,186,69,1) 100%);
@@ -18,10 +45,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .botao-criar {
-    background-color: rgba(20, 3, 251, 0.9);
-    color: #d5d5d5;
+    background-color: var(--cor-botao-criacao-envio);
+    color: var(--prata);
 }
 
 .botao-criar:hover {
-    background-color: rgba(20, 3, 251, 0.6);
+    background-color: var(--cor-botao-criacao-envio-hover);
+}
+
+main {
+    background-color: var(--cor-fundo-cards);
+    box-shadow: var(--box-shadow-cards);
+    border-radius: var(--tamanho-borda-campos-cards);
 }

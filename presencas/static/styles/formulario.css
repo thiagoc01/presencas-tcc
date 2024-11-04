@@ -1,17 +1,9 @@
 main {
-    background-color: rgba(234, 233, 233, 0.4);
-    box-shadow: 2px 2px 12px 2px rgba(0, 0, 0, 0.6);
-    border-radius: 10px;
     width: 50%;
     min-height: 100%;
 }
 
-input {
-    font-size: 1.2rem;
-}
-
 textarea {
-    font-size: 1.2rem;
     max-height: 50vh;
 }
 
@@ -27,33 +19,13 @@ textarea {
     font-size: 0.9rem;
 }
 
-@media (max-width: 768px) {
-    main {
-        width: 70%;
-    }
-
-    input {
-        width: 100%;
-        font-size: 1.2rem;
-    }
-    
-    textarea {
-        width: 100%;
-        font-size: 1.2rem;
-    }
-
-    span {
-        font-size: 0.8rem;
-    }
-}
-
 .animacao-entrada {
     position: relative;
 }
 
 .animacao-entrada span {
     position: absolute;
-    color: rgb(47, 46, 46);
+    color: var(--cor-label-inputs-form);
     top: -7%;
     left: 0%;
     transition: all 0.5s;
@@ -69,105 +41,91 @@ textarea {
 .enviar-arquivo {
     position: relative;
     max-width: fit-content;
-    border-radius: 8px; border: transparent;
-    background-color: rgba(20, 3, 251, 0.9);
-    color: #d5d5d5;
-    font-weight: 600;
+    border-radius: 8px;
+    border: transparent;
+    background-color: var(--cor-botao-criacao-envio);
+    color: var(--prata);
+    font-weight: var(--intensidade-fonte-botoes-labels);
     padding: calc(1rem * .75) !important;
 }
 
 .enviar-arquivo:hover {
-    background-color: rgba(20, 3, 251, 0.6);
+    background-color: var(--cor-botao-criacao-envio-hover);
 }
 
 .animacao-entrada input:focus, .animacao-entrada input:not(:placeholder-shown),
 .animacao-entrada textarea:focus, .animacao-entrada textarea:not(:placeholder-shown),
 .animacao-entrada input[type = "file"]:valid, input[type = "date"]:valid {
-    border-color: rgba(2, 151, 17, 0.6);
-    box-shadow: 0 8px 6px -4px rgba(2, 151, 17, 0.6);
+    border-color: var(--verde-principal);
+    box-shadow: var(--box-shadow-entradas);
 }
 
 .animacao-entrada input:focus + span,
 .animacao-entrada textarea:focus + span {
-  color: red;
+  color: var(--vermelho);
 }
 
 span {
-    font-weight: 600;
+    font-weight: var(--intensidade-fonte-botoes-labels);
 }
 
 input, textarea, input[type = "file"]:invalid {
     border: transparent;
-    border-block-end: 2px solid rgba(219, 4, 4, 0.6);
+    border-block-end: 2px solid var(--vermelho-escuro);
     background: transparent;
-    color: rgb(47, 46, 46);
+    color: var(--cor-label-inputs-form);
     font-weight: 500;
     font-size: 1.5rem;
     outline: none;
-    box-shadow: 0 8px 6px -4px rgba(219, 4, 4, 0.6);
+    box-shadow: 0 8px 6px -4px var(--vermelho-escuro);
 }
 
 input[type="submit"] {
     font-size: 1.2rem;
-    font-weight: 600;
+    font-weight: var(--intensidade-fonte-botoes-labels);
 }
 
 fieldset .interno {
-    border: 3px rgba(2, 151, 17, 0.6) solid;
-    border-radius: 10px;
-    box-shadow: 1px 1px 5px 2px rgba(0, 0, 0, 0.6);
+    border: 3px var(--verde-principal) solid;
+    border-radius: var(--tamanho-borda-campos-cards);
+    box-shadow: 1px 1px 5px 2px var(--preto-semi-transparente);
 }
 
 h4 {
     font-weight: 700;
 }
 
-.botao {
-    border-radius: 8px;
-    border: transparent;
-    box-shadow: none;
-}
-
 .botao:disabled, .botao:disabled:hover {
-    background-color: gray;
+    background-color: var(--cinza);
 }
 
 .botao-adicionar, .botao-adicionar:active {
-    background-color: rgba(3, 147, 17, 0.9);
-    color: white;
-    font-weight: 600;
+    background-color: var(--verde-claro-botao-barra-carregamento);
+    color: var(--branco);
+    font-weight: var(--intensidade-fonte-botoes-labels);
 }
 
 .botao-adicionar:hover {
-    background-color: rgba(3, 147, 17, 0.3);
+    background-color: var(--verde-claro-botao-barra-carregamento-hover);
 }
 
 .botao-remover, .botao-remover:active {
-    background-color: rgba(234, 0, 0, 0.9);
-    color: white;
-    font-weight: 600;
+    background-color: var(--vermelho-botao-remover);
+    color: var(--branco);
+    font-weight: var(--intensidade-fonte-botoes-labels);
 }
 
 .botao-remover:hover {
-    background-color: rgba(234, 0, 0, 0.3);
+    background-color: var(--vermelho-botao-remover-hover) !important;
 }
 
 input[type="file"] {
     display: none !important;
 }
 
-.botao-criar {
-    background-color: rgba(20, 3, 251, 0.9);
-    color: #d5d5d5;
-}
-
-.botao-criar:hover {
-    background-color: rgba(20, 3, 251, 0.6);
-}
-
 [id *= "erro"] {
-    background-color: #e9434b;
-    color: white;
+    background-color: var(--vermelho-fundo-erros);
+    color: var(--branco);
     height: auto;
     font-size: 1.3rem;
 }
@@ -182,5 +140,15 @@ input[type="file"] {
 }
 
 #barra-carregamento {
-    background-color: rgba(3, 147, 17, 0.9);
+    background-color: var(--verde-claro-botao-barra-carregamento);
+}
+
+@media (max-width: 768px) {
+    main {
+        width: 70%;
+    }
+
+    span {
+        font-size: 0.8rem;
+    }
 }

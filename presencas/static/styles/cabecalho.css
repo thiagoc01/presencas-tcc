@@ -6,12 +6,11 @@ ul {
 
 header li {
     font-size: 2rem;
-    color: white;
+    color: var(--branco);
 }
 
 header {
-    background: linear-gradient(156deg, rgba(1,117,47,1) 0%, rgba(32,143,66,1) 52%, rgba(11,66,25,1) 100%); 
-    font-family: 'Montserrat', sans-serif !important;
+    background: linear-gradient(156deg, rgba(1,117,47,1) 0%, rgba(32,143,66,1) 52%, rgba(11,66,25,1) 100%);
 }
 
 img {
@@ -20,6 +19,6 @@ img {
 }
 
 .titulo-login {
-    color: white;
+    color: var(--branco);
     font-size: 2rem;
 }

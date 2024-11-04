@@ -1,9 +1,9 @@
 input[type='checkbox']:checked {
-    box-shadow: 0 8px 6px -4px rgba(2, 151, 17, 0.6);
+    box-shadow: var(--box-shadow-entradas);
 }
 
 .botao {
-    font-weight: 600;
+    font-weight: var(--intensidade-fonte-botoes-labels);
 }
 
 .verificador-minimalidade-senha {
@@ -13,7 +13,7 @@ input[type='checkbox']:checked {
 
 .verificador-minimalidade-senha i {
     font-size: 1.2rem;
-    color: red;
+    color: var(--vermelho);
 }
 
 @media (max-width: 768px) {
@@ -27,6 +27,6 @@ input[type='checkbox']:checked {
 
     .verificador-minimalidade-senha i {
         font-size: 1.2rem;
-        color: red;
+        color: var(--vermelho);
     }
 }
