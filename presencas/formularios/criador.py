@@ -88,8 +88,8 @@ class Artista:
 
                 if campo.tamanho.data:
 
-                    eArea = re.compile("[0-9\,]{1,5} *[xX] *[0-9\,]{1,5} *(cm)?")
-                    eComprimento = re.compile("[0-9]{1,3}(?= *cm)")
+                    eArea = re.compile(r"[0-9\,]{1,5} *[xX] *[0-9\,]{1,5} *(cm)?")
+                    eComprimento = re.compile(r"[0-9]{1,3}(?= *cm)")
 
                     if eArea.match(campo.tamanho.data):
                         self.imagens[titulo]['area'] = campo.tamanho.data

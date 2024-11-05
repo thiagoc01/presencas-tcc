@@ -8,7 +8,7 @@ import re
 
 def _verifica_minimalidade_senha(form):
 
-    regex_simbolos = re.compile("[@_!#$%^&*()<>?/\|}{~:\.]")
+    regex_simbolos = re.compile(r"[@_\!#\$\%\^&\*\(\)<>\[\]\?\/\|\}\{~:\.]")
     regex_minuscula = re.compile("[a-z]")
     regex_maiuscula = re.compile("[A-Z]")
 
