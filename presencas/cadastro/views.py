@@ -1,10 +1,11 @@
 from flask import Blueprint, redirect, render_template, request, url_for, abort
 from flask_login import login_user, logout_user, current_user, login_required
-from presencas import bcrypt_var, db
+from presencas import bcrypt_var, db, app
 from .usuario import Usuario
 from .login import FormularioLogin
 from .controle_usuario import FormularioCadastro, FormularioRemocao, FormularioAlteracaoSenha
 from sqlalchemy.exc import DBAPIError, OperationalError
+from logging import SUCCESS
 
 cadastro_blueprint = Blueprint("cadastro", __name__)
 
@@ -30,7 +31,7 @@ def login():
         if usuario and bcrypt_var.check_password_hash(usuario[0].senha, form.senha.data):
 
             login_user(usuario[0], remember = form.lembrar_me.data)
-
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário logado")
             return redirect(url_for("menu"))
 
         else:
@@ -44,7 +45,7 @@ def login():
 def logout():
 
     if current_user.is_authenticated:
-
+        app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário saiu")
         logout_user()
 
     return redirect(url_for("cadastro.login"))
@@ -70,13 +71,14 @@ def criar_usuario():
 
             db.session.add(usuario)
             db.session.commit()
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""} criado")
 
         except (DBAPIError, OperationalError) as e:
-
+            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""}")
             erro = e
 
         except Exception as e:
-
+            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""}")
             abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
@@ -103,13 +105,16 @@ def remover_usuario():
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()[0]
             db.session.delete(usuario)
             db.session.commit()
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data} {"(administrador)" if usuario.e_adm else ""} removido")
 
         except (DBAPIError, OperationalError) as e:
 
+            app.logger.error(f"{current_user.usuario} | Erro ao remover usuário {form.usuario.data}")
             erro = e
 
         except Exception as e:
 
+            app.logger.error(f"{current_user.usuario} | Erro ao remover usuário {form.usuario.data}")
             abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = False)
@@ -132,13 +137,16 @@ def alterar_senha():
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = current_user.usuario)).first()[0]
             usuario.senha = bcrypt_var.generate_password_hash(form.senha.data)
             db.session.commit()
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Senha alterada com sucesso")
 
         except (DBAPIError, OperationalError) as e:
- 
+
+            app.logger.error(f"{current_user.usuario} | Erro ao alterar senha")
             erro = e
 
         except Exception as e:
 
+            app.logger.error(f"{current_user.usuario} | Erro ao alterar senha")
             abort(500, description = e)
 
         return render_template('cadastro/log_alteracao_senha.html', erro = erro)

@@ -6,7 +6,9 @@ from presencas import app, db
 from datetime import date
 import jsbeautifier
 from .solicitacao import Solicitacao
+from flask_login import current_user
 import time
+from logging import SUCCESS
 
 def adiciona_solicitacao(solicitacao):
     try:
@@ -179,10 +181,6 @@ class ArtistaImagens(Artista):
 
         self._carrega_imagens(form, arquivos)
 
-def imprime_vermelho(string): print("\033[91m{}\033[00m".format(string))
- 
-def imprime_verde(string): print("\033[92m{}\033[00m".format(string))
-
 class Requisicoes:
     def __init__(self, token : str, solicitacao : Solicitacao):
         self.header = {"Authorization" : token}
@@ -202,14 +200,15 @@ class Requisicoes:
             resposta = requests.post(url, headers = self.header, json = params)
 
         except requests.exceptions.ConnectionError:
+            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
             deleta_solicitacao(self.solicitacao)
             abort(502)
 
         if resposta.json()['success'] == True:
-            imprime_verde(f"Dataset {params['name']} criado com sucesso. \n")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Dataset {params['name']} criado com sucesso.")
         else:
-            imprime_vermelho(f"Erro ao criar o dataset {params.get('name')}")
-            imprime_vermelho(resposta.json())
+            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
+            app.logger.error(resposta.json())
             ocorreu_erro = True
 
         return resposta.json(), ocorreu_erro, resposta.status_code
@@ -227,14 +226,15 @@ class Requisicoes:
             resposta = requests.post(url, headers = self.header, data = params, files = arquivo)
 
         except requests.exceptions.ConnectionError:
+            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
             deleta_solicitacao(self.solicitacao)
             abort(502)
 
         if resposta.json()['success'] == True:
-            imprime_verde(f"Recurso {params['name']} criado com sucesso. \n")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Recurso {params['name']} criado com sucesso.")
         else:
-            imprime_vermelho(f"Erro ao criar recurso {params['name']}")
-            imprime_vermelho(resposta.json())
+            app.logger.error(f"{current_user.usuario} | Erro ao criar recurso {params['name']}")
+            app.logger.error(resposta.json())
             ocorreu_erro = True
 
         return resposta.json(), ocorreu_erro, resposta.status_code

@@ -4,6 +4,9 @@ from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from config import DevelopmentConfig
+from .log import configura_log
+
+configura_log()
 
 app = Flask(__name__)
 app.config.from_object(DevelopmentConfig)
