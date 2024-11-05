@@ -15,7 +15,7 @@ Projeto Presenças - Cadastrar ou remover usuário
 
 {% if cadastrar_usuario %}
 
-    <main class="p-4 mx-auto my-auto">
+    <main class="p-4 mx-auto my-auto position-absolute top-50 start-50 translate-middle">
 
         <form class="d-flex flex-column" method="POST">
             {{ form.csrf_token }}
@@ -65,7 +65,7 @@ Projeto Presenças - Cadastrar ou remover usuário
 
 {% else %}
 
-    <main class="p-4 mx-auto my-auto">
+    <main class="p-4 mx-auto my-auto position-absolute top-50 start-50 translate-middle">
 
         <form class="d-flex flex-column" method="POST">
             {{ form.csrf_token }}
