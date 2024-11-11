@@ -1,7 +1,7 @@
 from flask_wtf import FlaskForm
 from flask_login import current_user
 from wtforms.fields import StringField, PasswordField, BooleanField
-from wtforms.validators import InputRequired
+from wtforms.validators import InputRequired, Length
 from .usuario import Usuario
 from presencas import db, bcrypt_var
 import re
@@ -26,9 +26,9 @@ class FormularioCadastro(FlaskForm):
         csrf = True
 
     usuario = StringField('', [InputRequired("Insira o usuário para cadastro")], render_kw=dict(placeholder=""))
-    senha = PasswordField('', [InputRequired("Insira a senha para cadastro")], render_kw=dict(placeholder=""))
+    senha = PasswordField('', [InputRequired("Insira a senha para cadastro"), Length(max = 128)], render_kw=dict(placeholder=""))
     e_adm = BooleanField('', default=False)
-    confirmar_senha = PasswordField('', [InputRequired("Insira a senha para confirmar")], render_kw=dict(placeholder="Digite a senha novamente"))
+    confirmar_senha = PasswordField('', [InputRequired("Insira a senha para confirmar"), Length(max = 128)], render_kw=dict(placeholder="Digite a senha novamente"))
 
     def validate(self, extra_validators):
 
@@ -67,6 +67,16 @@ class FormularioCadastro(FlaskForm):
             self.erros["confirmar_senha"] = "As senhas não coincidem"
 
         _verifica_minimalidade_senha(self)
+
+        if len(self.senha.data) > 128:
+
+            if self.erros.get('senha') == None:
+
+                self.erros["senha"] = "A senha deve ter no máximo 128 caracteres"
+
+            else:
+
+                self.erros["senha"] = [self.erros.get("senha"), "A senha deve ter no máximo 128 caracteres"]
 
         if len(self.erros.items()) > 0:
 
@@ -126,8 +136,8 @@ class FormularioAlteracaoSenha(FlaskForm):
     class Meta:
         csrf = True
 
-    senha = PasswordField('', [InputRequired("Insira a senha para cadastro")], render_kw=dict(placeholder=""))
-    confirmar_senha = PasswordField('', [InputRequired("Insira a senha para confirmar")], render_kw=dict(placeholder="Digite a senha novamente"))
+    senha = PasswordField('', [InputRequired("Insira a senha para cadastro"), Length(max = 128)], render_kw=dict(placeholder=""))
+    confirmar_senha = PasswordField('', [InputRequired("Insira a senha para confirmar"), Length(max = 128)], render_kw=dict(placeholder="Digite a senha novamente"))
 
     def validate(self, extra_validators):
 
@@ -167,6 +177,20 @@ class FormularioAlteracaoSenha(FlaskForm):
             else:
 
                 self.erros["senha"] = [self.erros.get("senha"), "A senha nova não pode ser igual à atual"]
+
+        if len(self.senha.data) > 128:
+
+            if self.erros.get('senha') == None:
+
+                self.erros["senha"] = "A senha deve ter no máximo 128 caracteres"
+
+            elif type(self.erros.get('senha')) == list:
+
+                self.erros.get('senha').append("A senha deve ter no máximo 128 caracteres")
+
+            else:
+
+                self.erros["senha"] = [self.erros.get("senha"), "A senha deve ter no máximo 128 caracteres"]
 
         if len(self.erros.items()) > 0:
 
