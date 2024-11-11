@@ -110,6 +110,9 @@ function obtem_progresso(ID)
             $("#barra-carregamento").css('width', porcentagem + '%');
             $("#barra-carregamento").text(Math.round(porcentagem) + '%');
             $("#barra-carregamento").attr('aria-valuenow', porcentagem);
+
+            if (Math.round(porcentagem) == 100)
+                clearInterval(id_intervalo);     // Se chegar em 100%, cancela novos requests antes de success do submit cancelar
         }
     });
 }
