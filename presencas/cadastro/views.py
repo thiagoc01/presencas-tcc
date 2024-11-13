@@ -135,7 +135,7 @@ def alterar_senha():
         try:
 
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = current_user.usuario)).first()[0]
-            usuario.senha = bcrypt_var.generate_password_hash(form.senha.data)
+            usuario.senha = bcrypt_var.generate_password_hash(form.senha.data).decode('utf-8')
             db.session.commit()
             app.logger.log(SUCCESS, f"{current_user.usuario} | Senha alterada com sucesso")
 

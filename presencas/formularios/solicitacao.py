@@ -6,7 +6,7 @@ class Solicitacao(db.Model):
     __tablename__ = "solicitacoes"
 
     sessao = db.Column(db.String, primary_key=True)
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.String, primary_key=True)
     progresso = db.Column(db.Double)
 
     def __init__(self, id):
