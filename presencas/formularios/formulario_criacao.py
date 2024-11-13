@@ -45,6 +45,9 @@ class DataValida(object):
         
 class ImagensArtista(FlaskForm):
 
+    class Meta:
+        csrf = False
+
     titulo = StringField("", [Length(max = 128)],
                         render_kw=dict(placeholder="Título da imagem (se houver)"))
 
@@ -75,6 +78,9 @@ class ImagensArtista(FlaskForm):
 
 class UrlsArtista(FlaskForm):
 
+    class Meta:
+        csrf = False
+
     url = URLField('', render_kw=dict(required=True, \
                             placeholder="http://", \
                             oninvalid="setCustomValidity('Insira uma URL válida')", \
@@ -83,6 +89,9 @@ class UrlsArtista(FlaskForm):
     remover_campo_link = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover link'))
 
 class PalavrasChave(FlaskForm):
+
+    class Meta:
+        csrf = False
 
     palavra_chave = StringField('', render_kw=dict(placeholder='', required=True))
 
