@@ -71,14 +71,14 @@ def criar_usuario():
 
             db.session.add(usuario)
             db.session.commit()
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""} criado")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""} criado")
 
         except (DBAPIError, OperationalError) as e:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""}")
+            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             erro = e
 
         except Exception as e:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data} {"(administrador)" if form.e_adm else ""}")
+            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
@@ -105,7 +105,7 @@ def remover_usuario():
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()[0]
             db.session.delete(usuario)
             db.session.commit()
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data} {"(administrador)" if usuario.e_adm else ""} removido")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data}{ "(administrador)" if usuario.e_adm else ""} removido")
 
         except (DBAPIError, OperationalError) as e:
 
