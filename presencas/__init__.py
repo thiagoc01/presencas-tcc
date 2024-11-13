@@ -38,11 +38,12 @@ from presencas.cadastro.usuario import Usuario
 from .formularios.solicitacao import Solicitacao
 
 with app.app_context():
-    solicitacoes_pendentes = db.session.execute(db.select(Solicitacao)).all()
-    if solicitacoes_pendentes:
-        for solicitacao in solicitacoes_pendentes:
-            db.session.delete(solicitacao[0])
-        db.session.commit()
+    if inspect(db.engine).has_table('solicitacoes'):
+        solicitacoes_pendentes = db.session.execute(db.select(Solicitacao)).all()
+        if solicitacoes_pendentes:
+            for solicitacao in solicitacoes_pendentes:
+                db.session.delete(solicitacao[0])
+            db.session.commit()
 
 @login_manager.user_loader
 def load_user(id_usuario):
