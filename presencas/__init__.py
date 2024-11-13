@@ -3,13 +3,24 @@ from flask_login import LoginManager, login_required
 from flask_migrate import Migrate
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-from config import DevelopmentConfig
+from sqlalchemy import inspect
+from config import DevelopmentConfig, ProductionConfig
+import dotenv
 from .log import configura_log
 
-configura_log()
+flask_debug = dotenv.dotenv_values('.env').get('FLASK_DEBUG')
+
+if flask_debug == 'True':
+    configura_log()
 
 app = Flask(__name__)
-app.config.from_object(DevelopmentConfig)
+
+if flask_debug == 'True':
+    app.config.from_object(DevelopmentConfig)
+
+else:
+    app.config.from_object(ProductionConfig)
+
 bcrypt_var = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

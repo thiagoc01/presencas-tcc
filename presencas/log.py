@@ -9,42 +9,43 @@ import re, logging
     além de adicionar cores para SUCCESS, ERROR e CRITICAL.
 '''
 
-def configura_log():
-    logging.SUCCESS = 15    # Definido para esse projeto para que seja impresa uma string em verde nos logs
+class FiltroRemovedorDataWerkzeug(logging.Filter):
+    padrao = re.compile(r' - - \[.+?] "')
 
-    class FiltroRemovedorDataWerkzeug(logging.Filter):
-        padrao = re.compile(r' - - \[.+?] "')
+    def filter(self, record):
 
-        def filter(self, record):
+        record.msg = self.padrao.sub(' - "', record.msg)
 
-            record.msg = self.padrao.sub(' - "', record.msg)
+        return True
+    
 
-            return True
+class FormatadorCorSucessoErroCritico(logging.Formatter):
+    verde = "\033[92m"
+    vermelho = "\033[91m"
+    normal = "\033[00m"
+    formato = "[%(asctime)s] %(levelname)s %(message)s"
+    formato_data_hora = "%d/%m/%Y %H:%M:%S %z"
+
+    def format(self, record):
         
+        if record.levelno == logging.SUCCESS:
 
-    class FormatadorCorSucessoErroCritico(logging.Formatter):
-        verde = "\033[92m"
-        vermelho = "\033[91m"
-        normal = "\033[00m"
-        formato = "[%(asctime)s] %(levelname)s %(message)s"
-        formato_data_hora = "%d/%m/%Y %H:%M:%S %z"
+            formatador = logging.Formatter(self.verde + self.formato + self.normal, self.formato_data_hora)
 
-        def format(self, record):
-            
-            if record.levelno == logging.SUCCESS:
+        elif record.levelno == logging.ERROR or record.levelno == logging.CRITICAL:
 
-                formatador = logging.Formatter(self.verde + self.formato + self.normal, self.formato_data_hora)
+            formatador = logging.Formatter(self.vermelho + self.formato + self.normal, self.formato_data_hora)
 
-            elif record.levelno == logging.ERROR or record.levelno == logging.CRITICAL:
+        else:
 
-                formatador = logging.Formatter(self.vermelho + self.formato + self.normal, self.formato_data_hora)
+            formatador = logging.Formatter(self.formato, self.formato_data_hora)
 
-            else:
+        return formatador.format(record)
 
-                formatador = logging.Formatter(self.formato, self.formato_data_hora)
 
-            return formatador.format(record)
+def configura_log():
 
+    logging.SUCCESS = 15    # Definido para esse projeto para que seja impresa uma string em verde nos logs
 
     dictConfig(
         {
@@ -63,8 +64,8 @@ def configura_log():
                 "console": {
 
                     "class": "logging.StreamHandler",
-                    "stream": "ext://flask.logging.wsgi_errors_stream",
-                    "formatter": "default"
+                    "formatter": "default",
+                    "stream" : "ext://sys.stdout"
                 },
 
                 "arquivo": {
@@ -92,7 +93,7 @@ def configura_log():
             "loggers" : {
 
                 "werkzeug" : {
-                    "level": "DEBUG", "handlers": ["console", "arquivo"],
+                    "level": "INFO", "handlers": ["console", "arquivo"],
                     "filters": ["removedor_data_werkzeug"], "propagate": False
                 }
             }
@@ -100,3 +101,51 @@ def configura_log():
     )
 
     logging.addLevelName(logging.SUCCESS, "SUCCESS")
+
+logging.SUCCESS = 15
+
+logging.addLevelName(logging.SUCCESS, "SUCCESS")
+
+access_log_format = '%(h)s "%(r)s" %(s)s %(b)s'
+
+logconfig_dict = {
+    "version": 1,
+
+    "formatters": {
+
+        "default": {
+
+            "()": FormatadorCorSucessoErroCritico
+        }
+    },
+
+    "handlers": {
+
+        "console": {
+
+            "class": "logging.StreamHandler",
+            "formatter": "default",
+            "stream" : "ext://sys.stdout"
+        },
+
+        "arquivo": {
+
+            "class" : "logging.handlers.RotatingFileHandler",
+            "formatter": "default",
+            "filename": "/var/log/presencas.log",
+            "maxBytes": 125000000,
+            "backupCount": 5,
+            "encoding": "utf-8"
+        }
+
+    },
+
+    "root": {"level": "DEBUG", "handlers": ["console", "arquivo"]},
+
+    "loggers" : {
+
+        "gunicorn" : {
+            "level": "INFO", "handlers": ["console", "arquivo"], "propagate": False
+        }
+    }
+}
