@@ -1,0 +1,34 @@
+version: '3.9'
+
+services:
+
+  gunicorn:
+    image: presencas
+    container_name: gunicorn-presencas
+    restart: unless-stopped
+    volumes:
+      - ./.env:/app/.env:ro
+      - /etc/localtime:/etc/localtime:ro
+    depends_on:
+      - db
+    networks:
+      - presencas-tcc
+    ports:
+      - 8000:8000
+
+  db:
+    image: postgres
+    container_name: postgresql-presencas
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: 123456
+    volumes:
+      - ./psql/data/:/var/lib/postgresql/data/
+    ports:
+      - 5433:5432
+    networks:
+      - presencas-tcc
+
+networks:
+  presencas-tcc:
+    external: true

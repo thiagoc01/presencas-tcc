@@ -1,0 +1,12 @@
+**/__pycache__/
+migrations/
+instance/
+.git/
+.gitignore
+psql/
+env/
+.env.template
+Dockerfile
+.dockerignore
+.env
+docker-compose.yml
