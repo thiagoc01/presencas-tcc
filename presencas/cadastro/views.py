@@ -31,7 +31,7 @@ def login():
         if usuario and bcrypt_var.check_password_hash(usuario[0].senha, form.senha.data):
 
             login_user(usuario[0], remember = form.lembrar_me.data)
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário logado")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário logado{" (sessão permanente)" if form.lembrar_me.data else ""}")
             return redirect(url_for("menu"))
 
         else:

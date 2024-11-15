@@ -21,6 +21,7 @@ if flask_debug == 'True':
 else:
     app.config.from_object(ProductionConfig)
 
+app.logger.info(f"A aplicação iniciou com {app.config.get('PERMANENT_SESSION_LIFETIME')} segundos para expiração de sessão")
 bcrypt_var = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)

@@ -16,6 +16,8 @@ class Config(object):
     TOKEN_REQUISICOES = env.get("TOKEN_REQUISICOES")
     CKAN_URL = env.get("CKAN_URL")
     REMEMBER_COOKIE_NAME="presencas_sessao"
+    SESSION_PERMANENT = bool(env.get("SESSION_PERMANENT", False))
+    PERMANENT_SESSION_LIFETIME = int(env.get("PERMANENT_SESSION_LIFETIME", 3600))
 
 
 class DevelopmentConfig(Config):
@@ -25,6 +27,7 @@ class DevelopmentConfig(Config):
     DEBUG_TB_ENABLED = True
     SQLALCHEMY_DATABASE_URI = "sqlite:///testdb.sqlite"
     REMEMBER_COOKIE_DURATION=86400
+    SESSION_PERMANENT = True
 
 
 class TestingConfig(Config):
