@@ -1,5 +1,12 @@
-MAX_LINKS = 8;
-MAX_IMAGENS = MAX_PALAVRAS_CHAVE = 12;
+VARIAVEL_MAX = {
+    'links' : 8,
+    'imagens': 12,
+    'palavras_chave' : 12,
+    'linguagem' : 12,
+    'cidade_atuacao' : 4,
+    'estado_atuacao' : 4,
+    'pais_atuacao' : 4
+};
 id_intervalo = undefined;
 id_solicitacao = Math.floor(Math.random() * (1e20 - 1) + 1).toString();
 
@@ -12,8 +19,7 @@ function remove_ultimo_campo(evento)
         if ($(elemento).find(`[name*="${nome}"]`).length > 0)
             return elemento;
     }).remove();
-    if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ? MAX_LINKS - 1 :
-            variavel == 'imagens' ? MAX_IMAGENS - 1 : MAX_PALAVRAS_CHAVE - 1))
+    if ($(`#${variavel} > tbody`).children().length == VARIAVEL_MAX[variavel] - 1)
         $(`#${nome_botao_adicionar}`).prop('disabled', false);
 }
 
@@ -24,18 +30,44 @@ function adiciona_bloco(evento)
     if ($(`#${variavel} > tbody`).children().length == 0)
     {
         let template_URL;
-        if (variavel == 'links')
-            template_URL = $($.parseHTML(A)).find(':nth-child(1)');
-        else if (variavel == 'imagens')
-            template_URL = $($.parseHTML(B)).find(':nth-child(1)');
-        else
-            template_URL = $($.parseHTML(C)).find(':nth-child(1)');
+
+        switch (variavel) {
+            case 'links':
+                template_URL = $($.parseHTML(A)).find(':nth-child(1)');
+                break;
+
+            case 'imagens':
+                template_URL = $($.parseHTML(B)).find(':nth-child(1)');
+                break;
+
+            case 'palavras_chave':
+                template_URL = $($.parseHTML(C)).find(':nth-child(1)');
+                break;
+
+            case 'linguagem':
+                template_URL = $($.parseHTML(D)).find(':nth-child(1)');
+                break;
+
+            case 'cidade_atuacao':
+                template_URL = $($.parseHTML(E)).find(':nth-child(1)');
+                break;
+
+            case 'estado_atuacao':
+                template_URL = $($.parseHTML(F)).find(':nth-child(1)');
+                break;
+
+            case 'pais_atuacao':
+                template_URL = $($.parseHTML(G)).find(':nth-child(1)');
+                break;
+        }
+
         $(template_URL).children('[id *= -erro-]').remove();
         template_URL = $(template_URL).find(":nth-child(1)").get(0).outerHTML;
         $(`#${variavel} > tbody`).append(template_URL.replaceAll(new RegExp(`${variavel}-[0-9]+`, 'g'), variavel + '-' + 0));
         $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
         return;
     }
+
     let ultimo_id_campo = String($(`#${variavel} > tbody > tr:last > td > fieldset`).attr('name'));
     let [label_for_anterior, novo_id] = [ultimo_id_campo.split('-')[0], Number(ultimo_id_campo.split('-')[1]) + 1];
     let novo_campo = $(`#${variavel} > tbody > tr:last`).clone();
@@ -45,7 +77,7 @@ function adiciona_bloco(evento)
     $(`#${variavel} tbody tr [name*="-${nome_botao_remover}"]:last`).on("click", evento.data, callback);
     if (variavel == 'imagens')
         $("#imagens tbody tr input[type='file']:last").prev().css('background-color', '').css('color', '')
-    if ($(`#${variavel} > tbody`).children().length == (variavel == 'links' ?  MAX_LINKS : variavel == 'imagens' ? MAX_IMAGENS : MAX_PALAVRAS_CHAVE))
+    if ($(`#${variavel} > tbody`).children().length == VARIAVEL_MAX[variavel])
         $(`#${nome_botao_adicionar}`).prop('disabled', true);
 }
 
@@ -58,11 +90,31 @@ $('#adicionar_campo_imagem').on('click', {variavel : 'imagens', nome_botao_remov
 $('#adicionar_campo_palavras_chave').on('click', {variavel : 'palavras_chave', nome_botao_remover : 'remover_campo_palavras_chave',
     nome_botao_adicionar : 'adicionar_campo_palavras_chave', callback: remove_ultimo_campo}, adiciona_bloco);
 
+$('#adicionar_campo_linguagem').on('click', {variavel : 'linguagem', nome_botao_remover : 'remover_campo_linguagem',
+    nome_botao_adicionar : 'adicionar_campo_linguagem', callback: remove_ultimo_campo}, adiciona_bloco);
+
+$('#adicionar_campo_cidade_atuacao').on('click', {variavel : 'cidade_atuacao', nome_botao_remover : 'remover_campo_cidade_atuacao',
+    nome_botao_adicionar : 'adicionar_campo_cidade_atuacao', callback: remove_ultimo_campo}, adiciona_bloco);
+
+$('#adicionar_campo_estado_atuacao').on('click', {variavel : 'estado_atuacao', nome_botao_remover : 'remover_campo_estado_atuacao',
+    nome_botao_adicionar : 'adicionar_campo_estado_atuacao', callback: remove_ultimo_campo}, adiciona_bloco);
+
+$('#adicionar_campo_pais_atuacao').on('click', {variavel : 'pais_atuacao', nome_botao_remover : 'remover_campo_pais_atuacao',
+    nome_botao_adicionar : 'adicionar_campo_pais_atuacao', callback: remove_ultimo_campo}, adiciona_bloco);
+
 $('#links [name*="-remover_campo_link"]').on("click", {variavel: 'links', nome_botao_adicionar : 'adicionar_campo_link'}, remove_ultimo_campo);
 
 $('#imagens [name*="-remover_campo_imagem"]').on("click", {variavel: 'imagens', nome_botao_adicionar : 'adicionar_campo_imagem'}, remove_ultimo_campo);
 
 $('#palavras_chave [name*="-remover_campo_palavras_chave"]').on("click", {variavel: 'palavras_chave', nome_botao_adicionar : 'adicionar_campo_palavras_chave'}, remove_ultimo_campo);
+
+$('#linguagem [name*="-remover_campo_linguagem"]').on("click", {variavel: 'linguagem', nome_botao_adicionar : 'adicionar_campo_linguagem'}, remove_ultimo_campo);
+
+$('#cidade_atuacao [name*="-remover_campo_cidade_atuacao"]').on("click", {variavel: 'cidade_atuacao', nome_botao_adicionar : 'adicionar_campo_cidade_atuacao'}, remove_ultimo_campo);
+
+$('#estado_atuacao [name*="-remover_campo_estado_atuacao"]').on("click", {variavel: 'estado_atuacao', nome_botao_adicionar : 'adicionar_campo_estado_atuacao'}, remove_ultimo_campo);
+
+$('#pais_atuacao [name*="-remover_campo_pais_atuacao"]').on("click", {variavel: 'pais_atuacao', nome_botao_adicionar : 'adicionar_campo_pais_atuacao'}, remove_ultimo_campo);
 
 $(':root').on("change", 'input[type="file"]', function (e) {
     const arquivos = e.target.files;
@@ -79,14 +131,14 @@ $(':root').on("change", 'input[type="file"]', function (e) {
 });
 
 ['nome', 'trajetoria', 'producao', 'ultima_atualizacao', 'pesquisante',
-    'email_pesquisante', 'data_nascimento', 'genero', 'pagina'].forEach(campo => {
+    'email_pesquisante', 'data_inicio', 'data_fim', 'quantidade', 'genero', 'pagina', 'cidade', 'estado'].forEach(campo => {
     $(`#${campo}`).on("input", function (evento) {
         $('#' + campo + '-erro').remove();
         $(evento.target).off("input");
     });
 });
 
-['links', 'imagens', 'palavras_chave'].forEach(campo => {
+['links', 'imagens', 'palavras_chave', 'linguagem', 'cidade_atuacao', 'estado_atuacao', 'pais_atuacao'].forEach(campo => {
     $(`#${campo} td input`).on("input", function (evento) {
         $(evento.target).parent($(`#${evento.target.id}`)).next('[id *= -erro-]').remove();
         $(evento.target).off("input");

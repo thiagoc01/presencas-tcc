@@ -45,7 +45,15 @@ class Artista:
         self.genero = ""
         self.pesquisante = ""
         self.email_pesquisante = ""
-        self.data_nascimento = ""
+        self.data_inicio = ""
+        self.data_fim = ""
+        self.linguagem = []
+        self.quantidade = ""
+        self.cidade = ""
+        self.estado = ""
+        self.cidade_atuacao = []
+        self.estado_atuacao = []
+        self.pais_atuacao = []
         self.palavras_chave = []
         self.pagina = ""
 
@@ -74,9 +82,10 @@ class Artista:
 
                 self.imagens[titulo]['titulo'] = titulo
 
-                if campo.material.data:
-                    self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.material.data) \
-                            if self.imagens[titulo]["descricao"] != "" else campo.material.data
+                if campo.tecnica.data:
+                    self.imagens[titulo]['descricao'] += ("\n<br>\n" + campo.tecnica.data) \
+                            if self.imagens[titulo]["descricao"] != "" else campo.tecnica.data
+                    self.imagens[titulo]['tecnica'] = campo.tecnica.data
 
                 if campo.tamanho.data:
                 
@@ -139,9 +148,17 @@ class Artista:
 
             self.genero = form.genero.data
 
-        if form.data_nascimento.data:
+        if form.data_inicio.data:
 
-            self.data_nascimento = form.data_nascimento.data
+            self.data_inicio = form.data_inicio.data
+
+        if form.data_fim.data:
+
+            self.data_fim = form.data_fim.data
+
+        if form.quantidade.data:
+
+            self.quantidade = form.quantidade.data
 
         if form.email_pesquisante.data != None:
 
@@ -155,9 +172,33 @@ class Artista:
 
             self.pagina = form.pagina.data
 
+        if form.cidade.data:
+
+            self.cidade = form.cidade.data
+
+        if form.estado.data:
+
+            self.estado = form.estado.data
+
+        for cidade_atuacao in form.cidade_atuacao:
+
+            self.cidade_atuacao.append(cidade_atuacao.cidade_atuacao.data)
+
+        for estado_atuacao in form.estado_atuacao:
+
+            self.estado_atuacao.append(estado_atuacao.estado_atuacao.data)
+
+        for pais_atuacao in form.pais_atuacao:
+
+            self.pais_atuacao.append(pais_atuacao.pais_atuacao.data)
+
         for palavra_chave in form.palavras_chave:
 
             self.palavras_chave.append(palavra_chave.palavra_chave.data)
+
+        for linguagem in form.linguagem:
+
+            self.linguagem.append(linguagem.linguagem.data)
 
 class ArtistaImagens(Artista):
 
@@ -239,28 +280,47 @@ class Requisicoes:
 
         return resposta.json(), ocorreu_erro, resposta.status_code
 
+def _adiciona_parametro(params : dict, chave, valor):
+
+    if valor:
+
+        params[chave] = valor
+
 def cria_dataset_artista(artista : Artista, id_organizacao, nome_grupo, requisicoes : Requisicoes):
-
-    extras = []
-
-    extras.append({"key" : "first_name", "value" : artista.nome}) if artista.nome else ""
-    extras.append({"key" : "last_name", "value" : artista.sobrenome}) if artista.sobrenome else ""
-    extras.append({"key" : "gender" , "value" : artista.genero}) if artista.genero else ""
-    extras.append({"key" : "birthday" , "value" : artista.data_nascimento}) if artista.data_nascimento else ""
-    extras.append({"key" : "homepage" , "value" : artista.pagina}) if artista.pagina else ""
-    extras.append({"key" : "modified" , "value" : artista.atualizacao}) if artista.atualizacao else ""
-
-    if artista.links and artista.links[0] != None:
-        extras.append({"key" : "links" , "value" : ",".join([link for link in artista.links])})
 
     params = {
         "name"  : f"{artista.nome.lower()}_{artista.sobrenome.lower().replace(' ', '')}",
         "title" : f"{artista.nome} {artista.sobrenome}",
         "notes" : artista.descricao,
         "groups" : [{"name" : nome_grupo}],
-        "owner_org" : id_organizacao,
-        "extras" : extras
+        "owner_org" : id_organizacao
     }
+
+    _adiciona_parametro(params, "primeiro_nome", artista.nome)
+    _adiciona_parametro(params, "ultimo_nome", artista.sobrenome)
+    _adiciona_parametro(params, "genero", artista.genero)
+    _adiciona_parametro(params, "data_inicio", artista.data_inicio)
+    _adiciona_parametro(params, "data_fim", artista.data_fim)
+    _adiciona_parametro(params, "url", artista.pagina)
+    _adiciona_parametro(params, "quantidade", artista.quantidade)
+    _adiciona_parametro(params, "cidade", artista.cidade)
+    _adiciona_parametro(params, "estado", artista.estado)
+    _adiciona_parametro(params, "modified", artista.atualizacao)
+
+    if artista.links and artista.links[0] != None:
+        params['links'] = artista.links
+
+    if artista.linguagem and artista.linguagem[0] != None:
+        params['linguagens'] = artista.linguagem
+
+    if artista.cidade_atuacao and artista.cidade_atuacao[0] != None:
+        params['cidade_atuacao'] = artista.cidade_atuacao
+
+    if artista.estado_atuacao and artista.estado_atuacao[0] != None:
+        params['estado_atuacao'] = artista.estado_atuacao
+
+    if artista.pais_atuacao and artista.pais_atuacao[0] != None:
+        params['pais_atuacao'] = artista.pais_atuacao
 
     if artista.pesquisante != "":
         params['maintainer'] = artista.pesquisante
@@ -283,19 +343,23 @@ def cria_recurso_dataset(id_dataset, artista : Artista, imagem : str, requisicoe
 
     if artista.imagens[imagem].get('area') != None:
 
-        params_recurso['hasArea'] = artista.imagens[imagem].get('area')
+        params_recurso['area'] = artista.imagens[imagem].get('area')
 
     elif artista.imagens[imagem].get('comprimento') != None:
 
-        params_recurso['hasMetricLength'] = artista.imagens[imagem].get('comprimento')
+        params_recurso['comprimento'] = artista.imagens[imagem].get('comprimento')
 
     if artista.imagens[imagem].get('ano') != None:
 
-        params_recurso['issued'] = artista.imagens[imagem].get('ano')
+        params_recurso['data_criacao'] = artista.imagens[imagem].get('ano')
 
     if artista.imagens[imagem].get('fonte') != None:
 
-        params_recurso['documentation'] = artista.imagens[imagem].get('fonte')
+        params_recurso['fonte'] = artista.imagens[imagem].get('fonte')
+
+    if artista.imagens[imagem].get('tecnica') != None:
+
+        params_recurso['tecnica'] = artista.imagens[imagem].get('tecnica')
 
     if artista.imagens[imagem].get('titulo') != None:
 

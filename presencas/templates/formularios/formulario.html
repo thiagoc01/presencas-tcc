@@ -33,6 +33,21 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         </div>
 
         <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.quantidade, "", "mt-4", '<span><i class="fa-solid fa-person"></i><i class="fa-solid fa-hashtag pe-2"></i>Indivíduo, coletivo ou povo</span>') }}
+            {{ renderiza_erro_campo(form.quantidade.name) }}
+        </div>
+
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.cidade, "", "mt-4", '<span><i class="fa-solid fa-city pe-2"></i>Cidade</span>') }}
+            {{ renderiza_erro_campo(form.cidade.name) }}
+        </div>
+
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.estado, "", "mt-4", '<span><i class="fa-solid fa-flag pe-2"></i>Estado</span>') }}
+            {{ renderiza_erro_campo(form.estado.name) }}
+        </div>
+
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
             {{ renderiza_campo(form.pesquisante, "", "mt-4", '<span><i class="bi bi-search pe-2"></i>Pesquisante</span>') }}
             {{ renderiza_erro_campo(form.pesquisante.name) }}
         </div>
@@ -43,8 +58,13 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
         </div>
 
         <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
-            {{ renderiza_campo(form.data_nascimento, "", "mt-4", '<span><i class="bi bi-cake-fill pe-2"></i>Data de nascimento</span>') }}
-            {{ renderiza_erro_campo(form.data_nascimento.name) }}
+            {{ renderiza_campo(form.data_inicio, "", "mt-4", '<span><i class="bi bi-cake-fill pe-2"></i>Data de início</span>') }}
+            {{ renderiza_erro_campo(form.data_inicio.name) }}
+        </div>
+
+        <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
+            {{ renderiza_campo(form.data_fim, "", "mt-4", '<span><i class="fa-solid fa-cross pe-2"></i>Data de fim</span>') }}
+            {{ renderiza_erro_campo(form.data_fim.name) }}
         </div>
 
         <div class="d-flex flex-column mb-5 w-100 animacao-entrada">
@@ -62,7 +82,7 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
           <h4 class="align-self-start mb-5 ms-1"><i class="fa-solid fa-image pe-2"></i>Lista de imagens</h4>
             {% set spans = {
                 'titulo' : '<span class="mt-3 ms-2"><i class="bi bi-book-fill pe-2"></i>Título</span>',
-                'material' : '<span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>',
+                'tecnica' : '<span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Técnica</span>',
                 'tamanho' : '<span class="mt-3 ms-2"><i class="fa-solid fa-up-right-and-down-left-from-center pe-2"></i>Tamanho</span>',
                 'data' : '<span class="mt-3 ms-2"><i class="fa-solid fa-calendar pe-2"></i>Data da criação da obra</span>',
                 'descricao' : '<span class="mt-3 ms-2"><i class="fa-solid fa-quote-left pe-2"></i><i class="fa-solid fa-quote-right pe-2"></i>Descrição</span>',
@@ -95,6 +115,42 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
             <fieldset name="palavras_chave" class="w-100">
                 {{ renderiza_tabelas_campos(form.palavras_chave) }}
                 <div class="text-center mb-3"><button id="adicionar_campo_palavras_chave" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar campo</button></div>
+            </fieldset>
+        </div>
+
+        <div class="d-flex flex-column multicampos">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-language pe-2"></i>Linguagens</h4>
+
+            <fieldset name="linguagem" class="w-100">
+                {{ renderiza_tabelas_campos(form.linguagem, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_linguagem" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar linguagem</button></div>
+            </fieldset>
+        </div>
+
+        <div class="d-flex flex-column multicampos">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-city pe-2"></i>Cidades de atuação</h4>
+
+            <fieldset name="cidade_atuacao" class="w-100">
+                {{ renderiza_tabelas_campos(form.cidade_atuacao, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_cidade_atuacao" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar cidade</button></div>
+            </fieldset>
+        </div>
+
+        <div class="d-flex flex-column multicampos">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-flag pe-2"></i>Estados de atuação</h4>
+
+            <fieldset name="estado_atuacao" class="w-100">
+                {{ renderiza_tabelas_campos(form.estado_atuacao, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_estado_atuacao" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar estado</button></div>
+            </fieldset>
+        </div>
+
+        <div class="d-flex flex-column multicampos">
+            <h4 class="align-self-start ms-1 mb-5"><i class="fa-solid fa-flag pe-2"></i>Países de atuação</h4>
+
+            <fieldset name="pais_atuacao" class="w-100">
+                {{ renderiza_tabelas_campos(form.pais_atuacao, spans) }}
+                <div class="text-center mb-3"><button id="adicionar_campo_pais_atuacao" class="botao botao-adicionar p-2" type="button"><i class="fa-solid fa-plus pe-2"></i>Adicionar país</button></div>
             </fieldset>
         </div>
 
@@ -166,9 +222,9 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
                             
                             
     <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
-        <label class="" for="imagens-0-material"></label>
-        <input class="mt-4" id="imagens-0-material" maxlength="128" name="imagens-0-material" placeholder="Material da obra (se houver)" type="text" value="">
-        <span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Material</span>
+        <label class="" for="imagens-0-tecnica"></label>
+        <input class="mt-4" id="imagens-0-tecnica" maxlength="128" name="imagens-0-tecnica" placeholder="Técnica da obra (se houver)" type="text" value="">
+        <span class="mt-3 ms-2"><i class="fa-solid fa-person-digging pe-2"></i>Técnica</span>
     </div>
     
                             
@@ -287,6 +343,140 @@ Projeto Presenças - Formulário de cadastro de artistas e obras
                 </td>
             </tr>
         
+    </table>`;
+
+    D = `<table id="linguagem" class="w-100">
+        
+            <tr>
+                <th><label for="linguagem-0"></label></th>
+                <td>
+                    <fieldset name="linguagem-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="linguagem-0-linguagem"></label>
+        <input class="mt-4" id="linguagem-0-linguagem" name="linguagem-0-linguagem" placeholder="" required type="text" value="">
+        
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="linguagem-0-remover_campo_linguagem" class="botao botao-remover p-2" name="linguagem-0-remover_campo_linguagem" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+
+    </table>`;
+
+    E = `<table id="cidade_atuacao" class="w-100">
+        
+            <tr>
+                <th><label for="cidade_atuacao-0"></label></th>
+                <td>
+                    <fieldset name="cidade_atuacao-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="cidade_atuacao-0-cidade_atuacao"></label>
+        <input class="mt-4" id="cidade_atuacao-0-cidade_atuacao" name="cidade_atuacao-0-cidade_atuacao" placeholder="" required="" type="text" value="">
+        
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="cidade_atuacao-0-remover_campo_cidade_atuacao" class="botao botao-remover p-2" name="cidade_atuacao-0-remover_campo_cidade_atuacao" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+
+    </table>`;
+
+    F = `<table id="estado_atuacao" class="w-100">
+        
+            <tr>
+                <th><label for="estado_atuacao-0"></label></th>
+                <td>
+                    <fieldset name="estado_atuacao-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="estado_atuacao-0-estado_atuacao"></label>
+        <input class="mt-4" id="estado_atuacao-0-estado_atuacao" name="estado_atuacao-0-estado_atuacao" placeholder="" required="" type="text" value="">
+        
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="estado_atuacao-0-remover_campo_estado_atuacao" class="botao botao-remover p-2" name="estado_atuacao-0-remover_campo_estado_atuacao" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+
+    </table>`;
+
+    G = `<table id="pais_atuacao" class="w-100">
+    <tbody>
+        
+            <tr>
+                <th><label for="pais_atuacao-0"></label></th>
+                <td>
+                    <fieldset name="pais_atuacao-0" class="d-flex flex-column align-items-center mb-3 interno py-3 px-auto">
+                        
+                            
+                            
+                            
+    <div class="d-flex flex-column mb-5 w-100 p-2 animacao-entrada">
+        <label class="" for="pais_atuacao-0-pais_atuacao"></label>
+        <input class="mt-4" id="pais_atuacao-0-pais_atuacao" name="pais_atuacao-0-pais_atuacao" placeholder="" required="" type="text" value="">
+        
+    </div>
+    
+                            
+                        
+                            
+                            
+                            
+    <div class="mb-3 align-self-start p-2">
+        <button id="pais_atuacao-0-remover_campo_pais_atuacao" class="botao botao-remover p-2" name="pais_atuacao-0-remover_campo_pais_atuacao" type="button"><i class="fa-solid fa-xmark pe-2"></i>Remover campo</button>
+    </div>
+    
+                            
+                               
+                    </fieldset>
+                </td>
+            </tr>
+        
+    </tbody>
     </table>`;
 
     HTML_BARRA_PROGRESSO = `<div class="opaco">

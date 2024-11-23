@@ -51,8 +51,8 @@ class ImagensArtista(FlaskForm):
     titulo = StringField("", [Length(max = 128)],
                         render_kw=dict(placeholder="Título da imagem (se houver)"))
 
-    material = StringField("", [Length(max = 128)],
-                           render_kw=dict(placeholder="Material da obra (se houver)"))
+    tecnica = StringField("", [Length(max = 128)],
+                           render_kw=dict(placeholder="Técnica da obra (se houver)"))
 
     tamanho = StringField("", [Length(max = 128)],
                           render_kw=dict(placeholder="Tamanho em centímetros ou área física (se houver)"))
@@ -97,6 +97,42 @@ class PalavrasChave(FlaskForm):
 
     remover_campo_palavras_chave = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
 
+class Linguagens(FlaskForm):
+
+    class Meta:
+        csrf = False
+
+    linguagem = StringField('', render_kw=dict(placeholder='', required=True))
+
+    remover_campo_linguagem = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
+
+class CidadeAtuacao(FlaskForm):
+
+    class Meta:
+        csrf = False
+
+    cidade_atuacao = StringField('', render_kw=dict(placeholder='', required=True))
+
+    remover_campo_cidade_atuacao = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
+
+class EstadoAtuacao(FlaskForm):
+
+    class Meta:
+        csrf = False
+
+    estado_atuacao = StringField('', render_kw=dict(placeholder='', required=True))
+
+    remover_campo_estado_atuacao = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
+
+class PaisAtuacao(FlaskForm):
+
+    class Meta:
+        csrf = False
+
+    pais_atuacao = StringField('', render_kw=dict(placeholder='', required=True))
+
+    remover_campo_pais_atuacao = Field(widget=gera_botao_sem_acao, label='', render_kw=dict(conteudo='<i class="fa-solid fa-xmark pe-2"></i>Remover campo'))
+
 class FormularioArtista(FlaskForm):
 
     class Meta:
@@ -116,9 +152,25 @@ class FormularioArtista(FlaskForm):
 
     email_pesquisante = EmailField('', render_kw=dict(placeholder=""))
 
-    data_nascimento = StringField("", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+    quantidade = StringField('', render_kw=dict(placeholder=""))
+
+    data_inicio = StringField("", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
+
+    data_fim = StringField("", [Length(max = 128)], render_kw=dict(placeholder="Ano ou mês/ano ou dia/mês/ano"))
 
     palavras_chave = FieldList(FormField(PalavrasChave, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=12)
+
+    linguagem = FieldList(FormField(Linguagens, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=12)
+
+    cidade = StringField("", render_kw=dict(placeholder=""))
+
+    estado = StringField("", render_kw=dict(placeholder=""))
+
+    cidade_atuacao = FieldList(FormField(CidadeAtuacao, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=4)
+
+    estado_atuacao = FieldList(FormField(EstadoAtuacao, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=4)
+
+    pais_atuacao = FieldList(FormField(PaisAtuacao, label = ''), label = "", widget=TableWidget(), min_entries=0, max_entries=4)
 
     genero = StringField("", render_kw=dict(placeholder=""))
 
