@@ -3,6 +3,7 @@ from wtforms.fields import TextAreaField, StringField, URLField, FieldList, Form
 from wtforms.validators import InputRequired, Length, ValidationError
 from wtforms.widgets import TableWidget, html_params
 from datetime import date
+from dateutil.parser import parse
 from jinja2.filters import do_mark_safe
 
 def gera_botao_sem_acao(field, **kwargs):

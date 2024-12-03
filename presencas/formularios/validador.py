@@ -3,6 +3,7 @@ import requests, unidecode
 from presencas import app
 from json import JSONDecodeError
 from flask import abort
+from dateutil.parser import parse
 
 class ValidadorCriacaoArtista():
 
@@ -79,8 +80,23 @@ class ValidadorCriacaoArtista():
             self.retorna_mensagem_erro_campo_composto_form(form, "pais_atuacao", i, "pais_atuacao",  campo.pais_atuacao, "É necessário inserir o país")
             i += 1
 
-        # A validação da data é feita no módulo do formulário
+        if form.data_inicio.data:
 
+            try:
+                form.data_inicio.data = form.data_inicio.data.strip()
+                if len(form.data_inicio.data) > 0 and len(form.data_inicio.data) <= 4:
+                    form.data_inicio.data = str(parse(form.data_inicio.data, dayfirst=True).date().year)
+
+                elif len(form.data_inicio.data) <= 8:
+                    form.data_inicio.data = str(parse(form.data_inicio.data, dayfirst=True).date().strftime('%Y-%m'))
+
+                else:
+                    form.data_inicio.data = str(parse(form.data_inicio.data, dayfirst=True).date().isoformat())
+
+            except Exception:
+                form.erros['data_inicio'] = "Digite uma data válida"
+
+        # A validação da data é feita no módulo do formulário
 
         campos = ['imagens', 'links', 'palavras_chave', 'linguagem', 'cidade_atuacao', 'estado_atuacao', 'pais_atuacao']
 
