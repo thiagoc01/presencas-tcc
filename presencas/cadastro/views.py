@@ -31,12 +31,13 @@ def login():
         if usuario and bcrypt_var.check_password_hash(usuario[0].senha, form.senha.data):
 
             login_user(usuario[0], remember = form.lembrar_me.data)
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário logado{" (sessão permanente)" if form.lembrar_me.data else ""}")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.remote_addr} Usuário logado{" (sessão permanente)" if form.lembrar_me.data else ""}")
             return redirect(url_for("menu"))
 
         else:
 
             form.erros['login'] = 'Nome de usuário ou senha incorretos'
+            app.logger.error(f"{request.remote_addr} Nome de usuário ou senha incorretos")
 
     return render_template("login/login.html", form = form)
 
@@ -45,7 +46,7 @@ def login():
 def logout():
 
     if current_user.is_authenticated:
-        app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário saiu")
+        app.logger.log(SUCCESS, f"{current_user.usuario} | {request.remote_addr} Usuário saiu")
         logout_user()
 
     return redirect(url_for("cadastro.login"))
@@ -71,14 +72,14 @@ def criar_usuario():
 
             db.session.add(usuario)
             db.session.commit()
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""} criado")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.remote_addr} Usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""} criado")
 
         except (DBAPIError, OperationalError) as e:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             erro = e
 
         except Exception as e:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = True)
@@ -105,16 +106,16 @@ def remover_usuario():
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = form.usuario.data)).first()[0]
             db.session.delete(usuario)
             db.session.commit()
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Usuário {form.usuario.data}{ "(administrador)" if usuario.e_adm else ""} removido")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.remote_addr} Usuário {form.usuario.data}{ "(administrador)" if usuario.e_adm else ""} removido")
 
         except (DBAPIError, OperationalError) as e:
 
-            app.logger.error(f"{current_user.usuario} | Erro ao remover usuário {form.usuario.data}")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao remover usuário {form.usuario.data}")
             erro = e
 
         except Exception as e:
 
-            app.logger.error(f"{current_user.usuario} | Erro ao remover usuário {form.usuario.data}")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao remover usuário {form.usuario.data}")
             abort(500, description = e)
 
         return render_template('cadastro/log_cadastro.html', usuario = form.usuario.data, erro = erro, cadastrar_usuario = False)
@@ -137,16 +138,16 @@ def alterar_senha():
             usuario = db.session.execute(db.select(Usuario).filter_by(usuario = current_user.usuario)).first()[0]
             usuario.senha = bcrypt_var.generate_password_hash(form.senha.data).decode('utf-8')
             db.session.commit()
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Senha alterada com sucesso")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.remote_addr} Senha alterada com sucesso")
 
         except (DBAPIError, OperationalError) as e:
 
-            app.logger.error(f"{current_user.usuario} | Erro ao alterar senha")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao alterar senha")
             erro = e
 
         except Exception as e:
 
-            app.logger.error(f"{current_user.usuario} | Erro ao alterar senha")
+            app.logger.error(f"{current_user.usuario} | {request.remote_addr} Erro ao alterar senha")
             abort(500, description = e)
 
         return render_template('cadastro/log_alteracao_senha.html', erro = erro)
