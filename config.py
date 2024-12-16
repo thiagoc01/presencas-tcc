@@ -18,6 +18,8 @@ class Config(object):
     REMEMBER_COOKIE_NAME="presencas_sessao"
     SESSION_PERMANENT = bool(env.get("SESSION_PERMANENT", False))
     PERMANENT_SESSION_LIFETIME = int(env.get("PERMANENT_SESSION_LIFETIME", 3600))
+    ORGANIZACAO = env.get("ORGANIZACAO", 'cap-ufrj')
+    GRUPO = env.get("GRUPO", 'cap-ufrj')
 
 
 class DevelopmentConfig(Config):

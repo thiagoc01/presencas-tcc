@@ -394,7 +394,7 @@ def cria_artista_recursos_ckan(form, arquivos, id_solicitacao):
 
     adiciona_solicitacao(solicitacao)
 
-    resposta, erro, codigo_resposta = cria_dataset_artista(artista, 'cap_ufrj', 'cap_ufrj', requisicoes)
+    resposta, erro, codigo_resposta = cria_dataset_artista(artista, app.config['ORGANIZACAO'], app.config['GRUPO'], requisicoes)
 
     atualiza_progresso(solicitacao, progresso, TOTAL)
 
