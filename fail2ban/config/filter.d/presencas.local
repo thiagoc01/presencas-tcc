@@ -1,0 +1,4 @@
+[Definition]
+
+failregex = \[.+\] ERROR <HOST> Nome de usuário ou senha incorretos
+ignoreregex = 

@@ -38,6 +38,12 @@ class FormatadorCorSucessoErroCritico(logging.Formatter):
 
         else:
 
+            # Caso não haja NGINX na frente, não há proxy
+
+            if isinstance(record.args, dict) and record.args['{x-forwarded-for}i'] == '-':
+
+                record.msg = record.args['h'] + ' ' + record.msg
+
             formatador = logging.Formatter(self.formato, self.formato_data_hora)
 
         return formatador.format(record)
@@ -106,7 +112,7 @@ logging.SUCCESS = 15
 
 logging.addLevelName(logging.SUCCESS, "SUCCESS")
 
-access_log_format = '%(h)s "%(r)s" %(s)s %(b)s'
+access_log_format = '%({x-forwarded-for}i)s "%(r)s" %(s)s %(b)s'
 
 logconfig_dict = {
     "version": 1,

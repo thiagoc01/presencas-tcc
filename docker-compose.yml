@@ -1,33 +1,66 @@
 version: '3.9'
 
+volumes:
+  compartilhamento:
+
 services:
+
+  nginx:
+    image: nginx:alpine
+    container_name: presencas_nginx
+    restart: unless-stopped
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - compartilhamento:/var/www/html/app:ro
+    depends_on:
+      - gunicorn
+    ports:
+      - 80:80
+    networks:
+      - presencas-tcc
 
   gunicorn:
     image: presencas
-    container_name: gunicorn-presencas
+    container_name: presencas_gunicorn
     restart: unless-stopped
     volumes:
       - ./.env:/app/.env:ro
       - /etc/localtime:/etc/localtime:ro
+      - compartilhamento:/app
+      - ./fail2ban/presencas.log:/var/log/presencas.log
     depends_on:
       - db
     networks:
       - presencas-tcc
-    ports:
-      - 8000:8000
 
   db:
     image: postgres
-    container_name: postgresql-presencas
+    container_name: presencas_postgresql
     restart: unless-stopped
     environment:
       POSTGRES_PASSWORD: 123456
     volumes:
+      - /etc/localtime:/etc/localtime:ro
       - ./psql/data/:/var/lib/postgresql/data/
     ports:
       - 5433:5432
     networks:
       - presencas-tcc
+
+  fail2ban:
+    image: crazymax/fail2ban
+    container_name: presencas_fail2ban
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+    environment:
+      - TZ=America/Sao_Paulo
+    network_mode: host
+    volumes:
+      - ./fail2ban/config:/data
+      - /var/log:/var/log:ro
+      - ./fail2ban/presencas.log:/presencas-log/presencas.log:ro
+    restart: unless-stopped
 
 networks:
   presencas-tcc:

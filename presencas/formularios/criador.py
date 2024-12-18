@@ -1,7 +1,7 @@
 import unidecode
 import requests
 import re
-from flask import abort
+from flask import abort, request
 from presencas import app, db
 from datetime import date
 import jsbeautifier
@@ -241,14 +241,14 @@ class Requisicoes:
             resposta = requests.post(url, headers = self.header, json = params)
 
         except requests.exceptions.ConnectionError:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
+            app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar o dataset {params.get('name')}")
             deleta_solicitacao(self.solicitacao)
             abort(502)
 
         if resposta.json()['success'] == True:
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Dataset {params['name']} criado com sucesso.")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.access_route[-1]} Dataset {params['name']} criado com sucesso.")
         else:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
+            app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar o dataset {params.get('name')}")
             app.logger.error(resposta.json())
             ocorreu_erro = True
 
@@ -267,14 +267,14 @@ class Requisicoes:
             resposta = requests.post(url, headers = self.header, data = params, files = arquivo)
 
         except requests.exceptions.ConnectionError:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar o dataset {params.get('name')}")
+            app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar o dataset {params.get('name')}")
             deleta_solicitacao(self.solicitacao)
             abort(502)
 
         if resposta.json()['success'] == True:
-            app.logger.log(SUCCESS, f"{current_user.usuario} | Recurso {params['name']} criado com sucesso.")
+            app.logger.log(SUCCESS, f"{current_user.usuario} | {request.access_route[-1]} Recurso {params['name']} criado com sucesso.")
         else:
-            app.logger.error(f"{current_user.usuario} | Erro ao criar recurso {params['name']}")
+            app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar recurso {params['name']}")
             app.logger.error(resposta.json())
             ocorreu_erro = True
 
