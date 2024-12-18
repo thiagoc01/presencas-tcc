@@ -1,5 +1,6 @@
 main {
     width: 50%;
+    min-width: 300px;
 }
 
 textarea {
@@ -11,7 +12,7 @@ textarea {
 }
 
 .multicampos::placeholder {
-    font-size: 1rem;
+    font-size: 1em;
 }
 
 ::placeholder {
@@ -88,6 +89,8 @@ fieldset .interno {
     border: 3px var(--verde-principal) solid;
     border-radius: var(--tamanho-borda-campos-cards);
     box-shadow: 1px 1px 5px 2px var(--preto-semi-transparente);
+    margin-left: auto;
+    margin-right: auto;
 }
 
 h4 {
@@ -149,5 +152,9 @@ input[type="file"] {
 
     span {
         font-size: 0.8rem;
+    }
+
+    fieldset .interno input, textarea {
+        font-size: .75rem !important;
     }
 }
