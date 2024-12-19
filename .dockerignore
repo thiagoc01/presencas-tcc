@@ -5,6 +5,8 @@ instance/
 .gitignore
 psql/
 env/
+nginx/
+fail2ban/
 .env.template
 Dockerfile
 .dockerignore

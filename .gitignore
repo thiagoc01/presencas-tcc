@@ -5,3 +5,4 @@ instance/
 migrations/
 .env
 fail2ban/config/db/
+fail2ban/presencas.log
