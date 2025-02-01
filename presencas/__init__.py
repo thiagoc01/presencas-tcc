@@ -58,7 +58,7 @@ bcrypt_var = Bcrypt(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'cadastro.login'
-db = SQLAlchemy(app)
+db = SQLAlchemy(app, engine_options={"pool_pre_ping": True})
 migrate = Migrate(app, db)
 
 from presencas.cadastro.views import cadastro_blueprint
