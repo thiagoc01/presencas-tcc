@@ -45,7 +45,7 @@ def criar_superadm():
         print("Usuário criado com sucesso")
 
     except Exception:
-
+        db.session.rollback()
         print("Não foi possível criar o superusuário")
 
 @cli.command("remover_super_administrador")
@@ -61,7 +61,7 @@ def remover_superadm():
         print("Usuário removido com sucesso")
 
     except Exception:
-
+        db.session.rollback()
         print("Não foi possível remover o superusuário")
 
 

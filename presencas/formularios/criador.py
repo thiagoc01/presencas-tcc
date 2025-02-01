@@ -15,6 +15,7 @@ def adiciona_solicitacao(solicitacao):
         db.session.add(solicitacao)
         db.session.commit()
     except Exception as e:
+        db.session.rollback()
         abort(500, description = e)
 
 def atualiza_progresso(solicitacao, progresso, TOTAL):
@@ -22,6 +23,7 @@ def atualiza_progresso(solicitacao, progresso, TOTAL):
         solicitacao.progresso = progresso / TOTAL
         db.session.commit()
     except Exception:
+        db.session.rollback()
         pass
 
 def deleta_solicitacao(solicitacao):
@@ -29,6 +31,7 @@ def deleta_solicitacao(solicitacao):
         db.session.delete(solicitacao)
         db.session.commit()
     except Exception:
+        db.session.rollback()
         pass
 
 class Artista:

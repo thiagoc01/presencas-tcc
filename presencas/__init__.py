@@ -41,10 +41,13 @@ from .formularios.solicitacao import Solicitacao
 with app.app_context():
     if inspect(db.engine).has_table('solicitacoes'):
         solicitacoes_pendentes = db.session.execute(db.select(Solicitacao)).all()
-        if solicitacoes_pendentes:
-            for solicitacao in solicitacoes_pendentes:
-                db.session.delete(solicitacao[0])
-            db.session.commit()
+        try:
+            if solicitacoes_pendentes:
+                for solicitacao in solicitacoes_pendentes:
+                    db.session.delete(solicitacao[0])
+                db.session.commit()
+        except Exception:
+            db.session.rollback()
 
 @login_manager.user_loader
 def load_user(id_usuario):

@@ -75,10 +75,12 @@ def criar_usuario():
             app.logger.log(SUCCESS, f"{current_user.usuario} | {request.access_route[-1]} Usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""} criado")
 
         except (DBAPIError, OperationalError) as e:
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             erro = e
 
         except Exception as e:
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao criar usuário {form.usuario.data}{" (administrador)" if form.e_adm.data else ""}")
             abort(500, description = e)
 
@@ -109,12 +111,12 @@ def remover_usuario():
             app.logger.log(SUCCESS, f"{current_user.usuario} | {request.access_route[-1]} Usuário {form.usuario.data}{ "(administrador)" if usuario.e_adm else ""} removido")
 
         except (DBAPIError, OperationalError) as e:
-
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao remover usuário {form.usuario.data}")
             erro = e
 
         except Exception as e:
-
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao remover usuário {form.usuario.data}")
             abort(500, description = e)
 
@@ -141,12 +143,12 @@ def alterar_senha():
             app.logger.log(SUCCESS, f"{current_user.usuario} | {request.access_route[-1]} Senha alterada com sucesso")
 
         except (DBAPIError, OperationalError) as e:
-
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao alterar senha")
             erro = e
 
         except Exception as e:
-
+            db.session.rollback()
             app.logger.error(f"{current_user.usuario} | {request.access_route[-1]} Erro ao alterar senha")
             abort(500, description = e)
 
